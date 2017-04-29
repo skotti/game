@@ -1,0 +1,16 @@
+#ifndef INPUT_EVENT_H
+#define INPUT_EVENT_H
+
+enum class InputEvent {
+	FORWARD,
+	BACKWARD,
+	SHIFT_LEFT,
+	SHIFT_RIGHT,
+	UP,
+	DOWN,
+	ROTATE_LEFT,
+	ROTATE_RIGHT,
+	EXIT
+};
+
+#endif

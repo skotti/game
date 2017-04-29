@@ -1,0 +1,8 @@
+models :
+  - file : modelCube.obj
+    id : 1
+
+objects : 
+  - pos : [0.0, 0.0, 0.0]
+    angle : [0.0, 0.0, 0.0]
+    modelId : 1
