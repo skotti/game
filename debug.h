@@ -27,4 +27,8 @@ void vassert(
 #define DEBUG_ONLY(exp) exp
 #endif
 
+#define GL_CHECK(param) \
+	param;\
+	VASSERT((glGetError() == GL_NO_ERROR), "OpenGl internal error occured");
+
 #endif

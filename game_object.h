@@ -3,22 +3,22 @@
 
 #include "vector.h"
 #include "logger.h"
+#include "model.h"
+#include "object_view.h"
 
 class Engine;
 class Logic;
-class Model;
+//class Model;
 class Physic;
 
 class GameObject {
 	
 public:
-	GameObject(Vec3f pos, Vec3f angle, Model* model/*, Logic* logic, Physic* physic*/) :
+	GameObject(Vec3f pos, Vec3f angle/*, Logic* logic, Physic* physic*/) :
 		m_engine(nullptr),
-		m_model(model),
+		m_view(nullptr),
 		m_pos(pos),
-		m_angle(angle)/*,
-		m_logic(logic),
-		m_physic(physic)*/
+		m_angle(angle)
 	{
 		m_logger.setPrefix("GameObject:: ");
 		m_logger.log("Create GameObject");
@@ -29,21 +29,23 @@ public:
 		m_logger.log("Bind engine");
 	}
 	
-	void update() {
-// 		m_logic->logic(); 
-// 		m_physic->physics();
-//		drawModel(m_model);
+	void update(Window* window) {
+
+		m_view->draw(window, m_pos, m_angle);
 		//m_logger.log("Update GameObject");
 	}
 	
-	Model* getModel() const {
-		return m_model;
+	void setView(ObjectView* view) {
+		m_view = view;
 	}
-	
-	virtual ~GameObject() {}
+	virtual ~GameObject() {
+		if (m_view != nullptr)
+			delete m_view;
+	}
 private:
 	Engine* m_engine;
-	Model* m_model;
+	ObjectView* m_view;
+	
 	Vec3f m_pos;
 	Vec3f m_angle;
 	Logger m_logger;

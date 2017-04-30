@@ -9,7 +9,11 @@ add_executable(cube_game
 	engine.cpp
 	input_notifier.cpp
 	model.cpp
-	printf.cpp)
+	printf.cpp
+	window.cpp
+	object_view.cpp
+	shader.cpp
+	)
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)
 

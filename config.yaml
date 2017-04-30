@@ -1,8 +1,17 @@
 models :
   - file : modelCube.obj
     id : 1
+    
+shaders :
+  vertex:
+    - file : shaders/vertex.vert
+      id : 1
+  fragment:
+    - file : shaders/fragment.frag
+      id : 2
 
 objects : 
   - pos : [0.0, 0.0, 0.0]
     angle : [0.0, 0.0, 0.0]
     modelId : 1
+    shadersId : [1, 2]

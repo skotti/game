@@ -2,6 +2,7 @@
 #define ENGINE_H
 
 #include "stl_headers.h"
+#include "gl_headers.h"
 #include "game_object.h"
 #include "input_notifier.h"
 #include "yaml-cpp/yaml.h"
@@ -12,8 +13,9 @@ class Engine : public Listener<InputEvent> {
 
 public:
 	
-	Engine() : 
-		m_exit_required(false)
+	Engine(Window& window) : 
+		m_exit_required(false),
+		m_window(&window)
 	{
 		m_logger.setPrefix("Engine:: ");
 		m_logger.log("Create engine");
@@ -22,6 +24,7 @@ public:
 	void initialize() {
 		m_logger.log("Initialize engine");
 		initializeEngine();
+		initializeShaders();
 		initializeModels();
 		initializeObjects();
 	}
@@ -40,24 +43,41 @@ public:
 	
 	void update() {
 		//m_logger.log("Update engine");
+		
 		for (auto&& obj : m_game_object) {
-			obj->update();
+			obj->update(m_window);
 		}
 		engineLogic();
 	}
 	
+	virtual ~Engine() {
+		for (auto object : m_game_object) {
+			ASSERT(object != nullptr);
+			delete object;
+		}
+		
+		for (auto model : m_models) {
+			ASSERT(model.second != nullptr);
+			delete model.second;
+		}
+		m_game_object.clear();
+		m_models.clear();
+	}
 	
 private:
 	
 	void registerGameObject(GameObject* game_object) {
- 		m_logger.log("Register game object");
+		m_logger.log("Register game object");
+		game_object->bindEngine(this);
 		m_game_object.push_back(game_object);
- 	}
+		
+	}
 	
 	
 	void initializeEngine();
 	void initializeObjects();
 	void initializeModels();
+	void initializeShaders();
 	
 	void engineLogic(){/*TODO*/}
 	
@@ -65,10 +85,13 @@ private:
 		
 	std::list<GameObject*> m_game_object;
 	std::map<int, Model*> m_models;
+	std::map<int, Shader*> m_shaders;
 	
 	YAML::Node m_config;
 	
 	Logger m_logger;
+	
+	Window* m_window;
 };
 
 #endif

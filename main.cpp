@@ -3,22 +3,24 @@
 #include "debug.h"
 #include "engine.h"
 #include "model.h"
+#include "window.h"
+
+const GLuint WIDTH = 800, HEIGHT = 600;
 
 int main(int argc, char **argv) {
-
-	InputNotifier input_notifier;
-	Engine engine;
+	
+	Window window;
+	InputNotifier input_notifier(window);
+	Engine engine(window);
 	input_notifier.subscribe(&engine);
 
-//	Model cube_model(/*"cube.obj"*/);
-	
-//	GameObject cube_object(cube_model/**/);
-	
-//	engine.registerGameObject(cube_object);
 	engine.initialize();
 	
 	while(!engine.isExitRequired()) {
+		window.clearScreen();
+		input_notifier.input();
 		engine.update();
+		window.swapBuffers();
 	}
 	
 	input_notifier.unsubscribe(&engine);

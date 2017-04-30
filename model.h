@@ -11,13 +11,14 @@ class Model {
 public:
 	Model(const std::string& file);
 	
-	void draw(Vec3f pos, Vec3f angle) {
-		m_logger.log("Drawing model at pos = %, %, %, angle = %, %, %", pos[0], pos[1], pos[2], angle[0], angle[1], angle[2]);
-	}
+	GLuint getVBO() { return m_vbo;}
+	GLuint getEBO() { return m_ebo;}
+	GLuint getVAO() { return m_vao;}
+	~Model();
 	
 private:
 	GLuint m_vbo;
-	GLuint m_vbe;
+	GLuint m_ebo;
 	GLuint m_vao;
 	
 	std::vector<GLfloat> m_vertices;

@@ -29,8 +29,8 @@ void printf(std::ostream& stream, const char* format, T val, Args... args) {
 }
 
 template <typename... Args>
-size_t printf(const char* format, Args... args) {
-	return printf(std::cout, format, args...);
+void printf(const char* format, Args... args) {
+	printf(std::cout, format, args...);
 }
 
 #endif

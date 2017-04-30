@@ -2,6 +2,7 @@
 #include "yaml-cpp/yaml.h"
 
 #include "stl_headers.h"
+#include "shader.h"
 
 void Engine::initializeEngine()
 {
@@ -33,9 +34,37 @@ void Engine::initializeObjects()
 			object["angle"][1].as<float>(), 
 			object["angle"][2].as<float>()};	
 		m_logger.log("Found model : pos = %, %, %, id = %, %, %", pos[0], pos[1], pos[2], angle[0], angle[1], angle[2]);
-		registerGameObject(new GameObject(pos, angle, m_models.at(object["modelId"].as<int>())));
+		GameObject* game_object = new GameObject(pos, angle);
+		
+		ShaderProgram* shader_program = new ShaderProgram();
+		for (const auto& shader : object["shadersId"])
+			shader_program->attach(m_shaders.at(shader.as<int>()));
+		shader_program->compile();
+		
+		ObjectView* object_view = new ObjectView();
+		object_view->setModel(m_models.at(object["modelId"].as<int>()));
+		object_view->setShaderProgram(shader_program);
+		game_object->setView(object_view);
+		registerGameObject(game_object);
 	}
 }
+
+void Engine::initializeShaders()
+{
+	m_logger.log("Initialize shaders");
+	for (const auto& shader : m_config["shaders"]["vertex"]) {
+		m_logger.log("Found vertex shader : file = %, id = %", shader["file"].as<std::string>(), shader["id"].as<int>());
+		auto pair = m_shaders.insert(std::pair<int, Shader*>(shader["id"].as<int>(), new Shader(shader["file"].as<std::string>(), ShaderType::VERTEX)));
+		DASSERT(pair.second, "Cannot insert vertex shader twice");
+	}
+	
+	for (const auto& shader : m_config["shaders"]["fragment"]) {
+		m_logger.log("Found vertex shader : file = %, id = %", shader["file"].as<std::string>(), shader["id"].as<int>());
+		auto pair = m_shaders.insert(std::pair<int, Shader*>(shader["id"].as<int>(), new Shader(shader["file"].as<std::string>(), ShaderType::FRAGMENT)));
+		DASSERT(pair.second, "Cannot insert fragment shader twice");
+	}
+}
+
 
 
 
