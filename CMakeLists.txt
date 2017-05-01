@@ -18,6 +18,10 @@ add_executable(cube_game
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)
 
+configure_file(config.yaml config.yaml COPYONLY)
+configure_file(shaders/fragment.frag shaders/fragment.frag COPYONLY)
+configure_file(shaders/vertex.vert shaders/vertex.vert COPYONLY)
+
 find_package(OpenGL REQUIRED)
 
 target_include_directories(cube_game PUBLIC ${OPENGL_INCLUDE_DIR})
