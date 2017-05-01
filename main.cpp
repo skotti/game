@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
 	InputNotifier input_notifier(window);
 	Engine engine(window);
 	input_notifier.subscribe(&engine);
+	input_notifier.subscribe(&window.getCamera());
 
 	engine.initialize();
 	
@@ -23,6 +24,7 @@ int main(int argc, char **argv) {
 		window.swapBuffers();
 	}
 	
+	input_notifier.unsubscribe(&window.getCamera());
 	input_notifier.unsubscribe(&engine);
 	
 	return 0;

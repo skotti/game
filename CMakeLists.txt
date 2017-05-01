@@ -13,6 +13,7 @@ add_executable(cube_game
 	window.cpp
 	object_view.cpp
 	shader.cpp
+	camera.cpp
 	)
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)

@@ -3,6 +3,7 @@
 #include "gl_headers.h"
 #include "logger.h"
 #include "debug.h"
+#include "camera.h"
 
 class Window {
 	
@@ -20,11 +21,15 @@ public:
 	void swapBuffers() {
 		glfwSwapBuffers(m_window);
 	}
+	
+	Camera& getCamera() { return m_camera; }
 
 private:
 	static GLuint S_WIDTH, S_HEIGHT; 
 	GLFWwindow* m_window;
 	Logger m_logger;
+	
+	Camera m_camera;
 };
 
 #endif

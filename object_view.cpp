@@ -5,11 +5,11 @@ void ObjectView::draw(Window* window, Vec3f pos, Vec3f angle)
 {
 	
 	int width, height;
-  glfwGetFramebufferSize(window->getGLWindow(), &width, &height);  
+	glfwGetFramebufferSize(window->getGLWindow(), &width, &height);  
 	
-	glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
-	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f,  -10.0f);
-	glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+	glm::vec3 cameraPos = window->getCamera().getPos();
+	glm::vec3 cameraFront = window->getCamera().getFront();
+	glm::vec3 cameraUp = window->getCamera().getUp();
 	
 	GLuint program = m_shader_program->getShaderProgram();
 	
