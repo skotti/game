@@ -14,6 +14,7 @@ add_executable(cube_game
 	object_view.cpp
 	shader.cpp
 	camera.cpp
+	mouse_notifier.cpp
 	)
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)

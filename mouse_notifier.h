@@ -1,5 +1,6 @@
-#ifndef INPUT_NOTIFIER
-#define INPUT_NOTIFIER
+#ifndef MOUSE_NOTIFIER_H
+#define MOUSE_NOTIFIER_H
+
 
 #include "debug.h"
 #include "stl_headers.h"
@@ -10,15 +11,16 @@
 #include "logger.h"
 #include "window.h"
 
-class InputNotifier : public Notifier<InputEvent> {
+class MouseNotifier : public Notifier<MouseEvent> {
 public:
-	InputNotifier(Window& window);
+	MouseNotifier(Window& window);
+	
 	void input();
 	
 private:
-	bool isKeySet(int key) const;
 
 	Logger m_logger;
 };
+
 
 #endif

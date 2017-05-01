@@ -3,11 +3,13 @@
 
 #include "gl_headers.h"
 #include "input_event.h"
+#include "mouse_event.h"
 #include "listener.h"
-class Camera : public Listener<InputEvent> {
+class Camera : public Listener<InputEvent>, public Listener<MouseEvent> {
 public:
 	
 	virtual void onEvent(InputEvent event);
+	virtual void onEvent(MouseEvent event);
 	
 	glm::vec3 getPos() const { return m_camera_pos; }
 	glm::vec3 getFront() const { return m_camera_front; }
@@ -28,6 +30,10 @@ private:
 	glm::vec3 m_camera_pos = glm::vec3(0.0f, 1.0f, 3.0f);
 	glm::vec3 m_camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 m_camera_up = glm::vec3(0.0f, 1.0f,  0.0f);
+	
+	GLfloat m_lastX = m_camera_pos.x;
+	GLfloat m_lastY =  m_camera_pos.y;
+	bool m_fisrt_mouse = true;
 	
 	GLfloat m_shift_speed = 0.2;
 	GLfloat m_rotate_speed = 30;
