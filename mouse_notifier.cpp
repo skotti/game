@@ -5,7 +5,7 @@ float cursor_x;
 float cursor_y;
 
 void MouseNotifier::input() {
-	m_logger.log("Mouse shift detected");
+	//m_logger.log("Mouse shift detected");
 	MouseEvent mouse_event = {cursor_x, cursor_y};
 	notify(mouse_event);
 }

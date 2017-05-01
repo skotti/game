@@ -1,5 +1,5 @@
 models :
-  - file : modelCube.obj
+  - file : models/modelCube.obj
     id : 1
     
 shaders :

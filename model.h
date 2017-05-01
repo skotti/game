@@ -6,6 +6,7 @@
 #include "vector.h"
 #include "logger.h"
 
+
 class Model {
 
 public:
@@ -14,6 +15,7 @@ public:
 	GLuint getVBO() { return m_vbo;}
 	GLuint getEBO() { return m_ebo;}
 	GLuint getVAO() { return m_vao;}
+	int getIndicesSize() {return m_indices.size(); }
 	~Model();
 	
 private:
@@ -24,6 +26,7 @@ private:
 	std::vector<GLfloat> m_vertices;
 	std::vector<GLfloat> m_norms;
 	std::vector<GLfloat> m_textures;
+	std::vector<GLuint> m_indices;
 	
 	Logger m_logger;
 };

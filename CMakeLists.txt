@@ -20,6 +20,7 @@ add_executable(cube_game
 target_compile_options(cube_game PUBLIC -g -std=c++14)
 
 configure_file(config.yaml config.yaml COPYONLY)
+configure_file(models/modelCube.obj models/modelCube.obj COPYONLY)
 configure_file(shaders/fragment.frag shaders/fragment.frag COPYONLY)
 configure_file(shaders/vertex.vert shaders/vertex.vert COPYONLY)
 
@@ -47,3 +48,8 @@ find_package(Yaml REQUIRED)
 
 target_include_directories(cube_game PUBLIC ${YAML_INCLUDE_DIR})
 target_link_libraries(cube_game PUBLIC ${YAML_LIBRARIES})
+
+find_package(assimp REQUIRED)
+
+target_include_directories(cube_game PUBLIC ${assimp_INCLUDE_DIR})
+target_link_libraries(cube_game PUBLIC ${assimp_LIBRARIES})
