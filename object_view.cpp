@@ -15,9 +15,12 @@ void ObjectView::draw(Window* window, Vec3f pos, Vec3f angle)
 	
 	GL_CHECK(glUseProgram(program));
 	
-	
+	GL_CHECK(glActiveTexture(GL_TEXTURE0));
+	GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_texture->getGLid()));
+	GL_CHECK(glUniform1i(glGetUniformLocation(program, "tex"), 0));
+		
 	glm::mat4 view;
-	GLint viewLoc = glGetUniformLocation(program, "view");
+	GLint viewLoc = GL_CHECK(glGetUniformLocation(program, "view"));
 	view = glm::lookAt(cameraPos, cameraFront + cameraPos, cameraUp);
 	GL_CHECK(glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view)));
 	

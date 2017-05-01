@@ -6,13 +6,15 @@
 #include "shader_program.h"
 #include "model.h"
 #include "window.h"
+#include "texture.h"
 
 class ObjectView {
 	
 public:
 	ObjectView():
 		m_model(nullptr),
-		m_shader_program(nullptr)
+		m_shader_program(nullptr),
+		m_texture(nullptr)
 	{}
 	
 	void draw(Window* window, Vec3f pos, Vec3f angle);
@@ -25,6 +27,10 @@ public:
 		m_model = model;
 	}
 	
+	void setTexture(Texture* texture) {
+		m_texture = texture;
+	}
+	
 	~ObjectView() {
 		if (m_shader_program != nullptr)
 			delete m_shader_program;
@@ -33,6 +39,7 @@ public:
 private:
 
 	Model* m_model;
+	Texture* m_texture;
 	ShaderProgram* m_shader_program;
 };
 

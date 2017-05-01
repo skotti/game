@@ -8,6 +8,7 @@
 #include "yaml-cpp/yaml.h"
 #include "logger.h"
 #include "model.h"
+#include "texture.h"
 
 class Engine : public Listener<InputEvent> {
 
@@ -25,6 +26,7 @@ public:
 		m_logger.log("Initialize engine");
 		initializeEngine();
 		initializeShaders();
+		initializeTextures();
 		initializeModels();
 		initializeObjects();
 	}
@@ -60,8 +62,14 @@ public:
 			ASSERT(model.second != nullptr);
 			delete model.second;
 		}
+		
+		for (auto texture : m_textures) {
+			ASSERT(texture.second != nullptr);
+			delete texture.second;
+		}
 		m_game_object.clear();
 		m_models.clear();
+		m_textures.clear();
 	}
 	
 private:
@@ -78,6 +86,7 @@ private:
 	void initializeObjects();
 	void initializeModels();
 	void initializeShaders();
+	void initializeTextures();
 	
 	void engineLogic(){/*TODO*/}
 	
@@ -86,6 +95,7 @@ private:
 	std::list<GameObject*> m_game_object;
 	std::map<int, Model*> m_models;
 	std::map<int, Shader*> m_shaders;
+	std::map<int, Texture*> m_textures;
 	
 	YAML::Node m_config;
 	

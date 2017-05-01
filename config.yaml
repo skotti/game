@@ -1,6 +1,8 @@
 models :
   - file : models/modelCube.obj
     id : 1
+  - file : models/suzanna.obj
+    id : 2
     
 shaders :
   vertex:
@@ -10,8 +12,13 @@ shaders :
     - file : shaders/fragment.frag
       id : 2
 
+textures :
+  - file : textures/dragon.png
+    id : 1
+
 objects : 
   - pos : [0.0, 0.0, 0.0]
     angle : [0.0, 0.0, 0.0]
     modelId : 1
     shadersId : [1, 2]
+    textureId : 1

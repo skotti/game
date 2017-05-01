@@ -26,26 +26,15 @@ Model::Model(const std::string& file) {
 	
 	aiMesh* mesh = scene->mMeshes[0];
 	
+	m_vertices.resize(mesh->mNumVertices);
 	for (int i = 0; i < mesh->mNumVertices; ++i) {
-		m_vertices.push_back(mesh->mVertices[i].x);
-		m_vertices.push_back(mesh->mVertices[i].y);
-		m_vertices.push_back(mesh->mVertices[i].z);
+		m_vertices.at(i).m_vertex = Vec3<GLfloat>{mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z};
+		m_vertices.at(i).m_norm = Vec3<GLfloat>{mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z};
+		m_vertices.at(i).m_texture = Vec2<GLfloat>{mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y};
 		m_logger.log("Vert %: % % %", i, mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 	}
 	
 	m_logger.log("numVerices: %", mesh->mNumVertices);
-	
-	for (int i = 0; i < mesh->mNumVertices; ++i) {
-		m_norms.push_back(mesh->mNormals[i].x);
-		m_norms.push_back(mesh->mNormals[i].y);
-		m_norms.push_back(mesh->mNormals[i].z);
-	}
-	
-	for (int i = 0; i < mesh->mNumVertices; ++i) {
-		m_textures.push_back(mesh->mTextureCoords[0][i].x);
-		m_textures.push_back(mesh->mTextureCoords[0][i].y);
-		m_textures.push_back(mesh->mTextureCoords[0][i].z);
-	}
 	
 	for (int i = 0; i < mesh->mNumFaces; ++i) {
 		for (int j = 0; j < mesh->mFaces[i].mNumIndices; ++j) {
@@ -54,50 +43,25 @@ Model::Model(const std::string& file) {
 		}
 	}
 	
-// 	GLfloat vert[] = {
-// 		-0.5f, -0.5f, -0.5f,
-// 		 0.5f, -0.5f, -0.5f,
-// 		 0.5f, -0.5f, 0.5f,
-// 		-0.5f, -0.5f, 0.5f,
-// 		-0.5f, 0.5f, -0.5f,
-// 		 0.5f, 0.5f, -0.5f,
-// 		 0.5f, 0.5f, 0.5f,
-// 		-0.5f, 0.5f, 0.5f
-// 		
-// 	};
-// 	GLuint ind[] = {
-// 		0, 1, 2,
-// 		0, 2, 3,
-// 		4, 5, 6, 
-// 		4, 6, 7,
-// 		6, 5, 1,
-// 		6, 1, 2,
-// 		7, 6, 2, 
-// 		7, 2, 3,
-// 		7, 6, 0, 
-// 		7, 0, 3,
-// 		4, 5, 1,
-// 		4, 1, 0
-// 	};
-// 	
-// 	m_vertices.resize(8*3);
-// 	m_indices.resize(36);
-// 	std::copy(vert, &vert[3*8], m_vertices.begin());
-// 	std::copy(ind, &ind[36], m_indices.begin());
-	
 	GL_CHECK(glGenVertexArrays(1, &m_vao));
 	GL_CHECK(glGenBuffers(1, &m_vbo));
 	GL_CHECK(glGenBuffers(1, &m_ebo));
 	GL_CHECK(glBindVertexArray(m_vao));
 	
 	GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
-	GL_CHECK(glBufferData(GL_ARRAY_BUFFER, /*sizeof(vert)*/ sizeof(GLfloat) * m_vertices.size(), /*vert*/ &m_vertices.at(0), GL_STATIC_DRAW));
+	GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_vertices.size(), &m_vertices.at(0), GL_STATIC_DRAW));
 	
 	GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo));
-	GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER,/* sizeof(ind)*/sizeof(GLuint) * m_indices.size(), /*ind*/ &m_indices.at(0), GL_STATIC_DRAW));
+	GL_CHECK(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * m_indices.size(), &m_indices.at(0), GL_STATIC_DRAW));
 	
-	GL_CHECK(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0));
+	
+	GL_CHECK(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, m_vertex)));
 	GL_CHECK(glEnableVertexAttribArray(0));
+	GL_CHECK(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, m_norm)));
+	GL_CHECK(glEnableVertexAttribArray(1));
+	GL_CHECK(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, m_texture)));
+	GL_CHECK(glEnableVertexAttribArray(2));
+	
  
 	GL_CHECK(glBindVertexArray(0));
 }

@@ -44,7 +44,9 @@ void Engine::initializeObjects()
 		ObjectView* object_view = new ObjectView();
 		object_view->setModel(m_models.at(object["modelId"].as<int>()));
 		object_view->setShaderProgram(shader_program);
+		object_view->setTexture(m_textures.at(object["textureId"].as<int>()));
 		game_object->setView(object_view);
+		
 		registerGameObject(game_object);
 	}
 }
@@ -62,6 +64,17 @@ void Engine::initializeShaders()
 		m_logger.log("Found vertex shader : file = %, id = %", shader["file"].as<std::string>(), shader["id"].as<int>());
 		auto pair = m_shaders.insert(std::pair<int, Shader*>(shader["id"].as<int>(), new Shader(shader["file"].as<std::string>(), ShaderType::FRAGMENT)));
 		DASSERT(pair.second, "Cannot insert fragment shader twice");
+	}
+}
+
+
+void Engine::initializeTextures()
+{
+	m_logger.log("Initialize shaders");
+	for (const auto& texture : m_config["textures"]) {
+		m_logger.log("Found texture : file = %, id = %", texture["file"].as<std::string>(), texture["id"].as<int>());
+		auto pair = m_textures.insert(std::pair<int, Texture*>(texture["id"].as<int>(), new Texture(texture["file"].as<std::string>())));
+		DASSERT(pair.second, "Cannot insert texture twice");
 	}
 }
 

@@ -15,12 +15,15 @@ add_executable(cube_game
 	shader.cpp
 	camera.cpp
 	mouse_notifier.cpp
+	texture.cpp
 	)
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)
 
 configure_file(config.yaml config.yaml COPYONLY)
 configure_file(models/modelCube.obj models/modelCube.obj COPYONLY)
+configure_file(models/suzanna.obj models/suzanna.obj COPYONLY)
+configure_file(textures/dragon.png textures/dragon.png COPYONLY)
 configure_file(shaders/fragment.frag shaders/fragment.frag COPYONLY)
 configure_file(shaders/vertex.vert shaders/vertex.vert COPYONLY)
 

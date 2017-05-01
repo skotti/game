@@ -8,6 +8,11 @@
 
 
 class Model {
+	struct Vertex {
+		Vec3<GLfloat> m_vertex;
+		Vec3<GLfloat> m_norm;
+		Vec2<GLfloat> m_texture;
+	};
 
 public:
 	Model(const std::string& file);
@@ -23,9 +28,7 @@ private:
 	GLuint m_ebo;
 	GLuint m_vao;
 	
-	std::vector<GLfloat> m_vertices;
-	std::vector<GLfloat> m_norms;
-	std::vector<GLfloat> m_textures;
+	std::vector<Vertex> m_vertices;
 	std::vector<GLuint> m_indices;
 	
 	Logger m_logger;

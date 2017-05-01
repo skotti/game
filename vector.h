@@ -11,4 +11,9 @@ typedef std::array<float, 2> Vec2f;
 typedef std::array<float, 3> Vec3f;
 typedef std::array<float, 4> Vec4f;
 
+template <typename Type>
+using Vec3 = std::array<Type, 3>;
+template <typename Type>
+using Vec2 = std::array<Type, 2>;
+
 #endif
