@@ -6,12 +6,14 @@
 #include "math.h"
 
 #include "game_logic.h"
+#include "utils.h"
 
 #include <random>
 
 const float Engine::S_BLOCK_WIDTH = 0.5;
 const float Engine::S_BLOCK_HEIGHT = 0.9;
-const float Engine::S_PLAYER_HEIGHT = 0.1;
+const float Engine::S_PLAYER_HEIGHT = 0.2;
+const float Engine::S_PLAYER_DELTA = 0.01;
 
 void Engine::initializeEngine()
 {
@@ -166,9 +168,10 @@ void Engine::initializeMaze() {
 	int start_x = 5;
 	int start_y = 2;
 	m_generator.generate(size_x, size_y, start_x, start_y);
+	m_maze_components.resize(size_x * size_y);
 	
 	auto start_pos = m_generator.getStart();
-	m_window->getCamera().setPos(Vec3f{(start_pos.x() + 0.5f)*S_BLOCK_WIDTH, m_generator.height(start_pos)*S_BLOCK_HEIGHT + S_PLAYER_HEIGHT, (start_pos.y()+0.5f)*S_BLOCK_WIDTH});
+	m_window->getCamera().setPos(glm::vec3((start_pos.x() + 0.5f)*S_BLOCK_WIDTH, m_generator.height(start_pos)*S_BLOCK_HEIGHT/2.0f + S_PLAYER_HEIGHT, (start_pos.y()+0.5f)*S_BLOCK_WIDTH));
 	
 	Vec3f pos;
 	Vec3f size;
@@ -192,8 +195,8 @@ void Engine::initializeMaze() {
 			game_object->setView(object_view);
 		
 			registerGameObject(game_object);
+			m_maze_components.at(i + j * size_x) = game_object;
 		}
-
 }
 
 void Engine::engineLogic() {
@@ -205,4 +208,33 @@ void Engine::engineLogic() {
 	m_logger.log("pos = %, %, %, ind = %, %", pos.x, pos.y, pos.z, cur_cube_i, cur_cube_j);
 	
 	m_generator.setPosition(cur_cube_i, cur_cube_j);
+}
+
+void Engine::correctPlayerPosition()
+{
+	glm::vec3 cur_player_pos = m_window->getCamera().getPos();
+	
+	int cur_cube_i = floor(cur_player_pos.x / S_BLOCK_WIDTH);
+	int cur_cube_j = floor(cur_player_pos.z / S_BLOCK_WIDTH);
+	
+	int size_x = m_generator.getLen().x();
+	Vec3f next_block_height = m_maze_components.at(cur_cube_i + cur_cube_j * size_x)->size();
+	
+	float desired_player_height = next_block_height[1]/2.0f + S_PLAYER_HEIGHT;
+	float cur_player_height = cur_player_pos.y;
+	
+	if (cur_player_height < desired_player_height) {
+		cur_player_height = desired_player_height;
+	}
+	else if (cur_player_height > desired_player_height) { 
+		if(cur_player_height - S_PLAYER_DELTA > desired_player_height) {
+			cur_player_height -= S_PLAYER_DELTA;
+		} else {
+			cur_player_height = desired_player_height;
+		}
+	}
+
+	cur_player_pos.y = cur_player_height;
+	
+	m_window->getCamera().setPos(cur_player_pos);
 }

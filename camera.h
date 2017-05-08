@@ -16,9 +16,9 @@ public:
 	glm::vec3 getFront() const { return m_camera_front; }
 	glm::vec3 getUp() const { return m_camera_up; }
 	
-	glm::vec3 setPos(Vec3f pos) { m_camera_pos = glm::vec3(pos[0], pos[1], pos[2]); }
-	glm::vec3 setFront(Vec3f front) { m_camera_front = glm::vec3(front[0], front[1], front[2]); }
-	glm::vec3 setUp(Vec3f up) { m_camera_up = glm::vec3(up[0], up[1], up[2]); }
+	void setPos(glm::vec3 pos) { m_camera_pos = pos; }
+	void setFront(glm::vec3 front) { m_camera_front = front; }
+	void setUp(glm::vec3 up) { m_camera_up = up; }
 	
 	virtual ~Camera() {}
 	

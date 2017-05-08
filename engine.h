@@ -55,6 +55,7 @@ public:
 		for (auto&& obj : m_game_object) {
 			obj->update(m_window);
 		}
+		correctPlayerPosition();
 	}
 	
 	virtual ~Engine() {
@@ -93,6 +94,7 @@ public:
 	static const float S_BLOCK_HEIGHT;
 	static const float S_BLOCK_WIDTH;
 	static const float S_PLAYER_HEIGHT;
+	static const float S_PLAYER_DELTA;
 	
 	
 private:
@@ -113,6 +115,7 @@ private:
 	void initializeMaze();
 	
 	void engineLogic();
+	void correctPlayerPosition();
 	
 	bool m_exit_required;
 		
@@ -123,6 +126,7 @@ private:
 	std::map<int, Texture*> m_textures;
 	std::map<int, Material*> m_materials;
 	std::vector<Light*> m_light_sources;
+	std::vector<GameObject*> m_maze_components;
 	YAML::Node m_config;
 	
 	MazeGenerator m_generator;

@@ -42,8 +42,11 @@ public:
 	virtual void logic();
 	
 	virtual ~MazeBlockLogic() {}
-private:
+	
 	static const float S_DELTA_H;
+	
+private:
+	
 	int m_i = 0, m_j = 0;
 };
 
