@@ -6,19 +6,132 @@ models :
     
 shaders :
   vertex:
-    - file : shaders/vertex.vert
+    - file : shaders/texture_vertex.vert
       id : 1
-  fragment:
-    - file : shaders/fragment.frag
+    - file : shaders/material_vertex.vert
       id : 2
+    - file : shaders/light_vertex.vert
+      id : 3
+  fragment:
+    - file : shaders/texture_fragment.frag
+      id : 4
+    - file : shaders/material_fragment.frag
+      id : 5
+    - file : shaders/light_fragment.frag
+      id : 6
 
 textures :
-  - file : textures/dragon.png
+  - file : textures/wood.png
+    id : 1
+  - file : textures/container.png
+    id : 2
+  - file : textures/concrete.jpg
+    id : 3
+  - file : textures/earth.png
+    id : 4
+  - file : textures/grass.png
+    id : 5
+    
+materials : 
+  - ambient : [0.0215, 0.1745, 0.0215]
+    specular : [0.633, 0.727811, 0.633]
+    diffuse : [0.07568, 0.61424, 0.07568]
+    shine : 1
     id : 1
 
+lightsources : 
+  - direction : [-0.2, -1.0, -0.3]
+    ambient : [0.633, 0.727811, 0.633]
+    diffuse : [0.4, 0.4, 0.4]
+    specular : [0.5, 0.5, 0.5]
+    type : 1
+    id : 1
+    
+  - pos : [0.7, 0.2, 0.2]
+    ambient : [0.05, 0.05, 0.05]
+    diffuse : [0.8, 0.8, 0.8]
+    specular : [1.0, 1.0, 1.0]
+    constant : 1.0
+    linear : 0.09
+    quadratic : 0.032
+    type : 2
+    id : 2
+  
+  - pos : [2.3, -3.3, -4.0]
+    ambient : [0.05, 0.05, 0.05]
+    diffuse : [0.8, 0.8, 0.8]
+    specular : [1.0, 1.0, 1.0]
+    constant : 1.0
+    linear : 0.09
+    quadratic : 0.032
+    type : 2
+    id : 3
+    
+  - pos : [-4.0, 2.0, -12.0]
+    ambient : [0.05, 0.05, 0.05]
+    diffuse : [0.8, 0.8, 0.8]
+    specular : [1.0, 1.0, 1.0]
+    constant : 1.0
+    linear : 0.09
+    quadratic : 0.032
+    type : 2
+    id : 4
+    
+  - pos : [0.0, 0.0, -3.0]
+    ambient : [0.05, 0.05, 0.05]
+    diffuse : [0.8, 0.8, 0.8]
+    specular : [1.0, 1.0, 1.0]
+    constant : 1.0
+    linear : 0.09
+    quadratic : 0.032
+    type : 2
+    id : 5
+    
 objects : 
   - pos : [0.0, 0.0, 0.0]
     angle : [0.0, 0.0, 0.0]
+    size : [1.0, 1.0, 1.0]
     modelId : 1
-    shadersId : [1, 2]
-    textureId : 1
+    shadersId : [2, 5]
+    materialId : 1
+    
+  - pos : [2.0, 0.0, 0.0]
+    angle : [0.0, 0.0, 0.0]
+    size : [0.5, 0.5, 0.5]
+    modelId : 1
+    shadersId : [2, 5]
+    materialId : 1
+    
+  - pos : [4.0, 0.0, 0.0]
+    angle : [0.0, 0.0, 0.0]
+    size : [0.8, 0.8, 0.8]
+    modelId : 1
+    shadersId : [2, 5]
+    materialId : 1
+    
+  - pos : [0.0, 0.0, 2.0]
+    angle : [0.0, 0.0, 0.0]
+    size : [1.0, 1.0, 1.0]
+    modelId : 1
+    shadersId : [2, 5]
+    materialId : 1
+    
+  - pos : [0.0, 0.0, 4.0]
+    angle : [0.0, 0.0, 0.0]
+    size : [0.7, 0.7, 0.7]
+    modelId : 1
+    shadersId : [2, 5]
+    materialId : 1
+    
+  - pos : [6.0, 0.0, 0.0]
+    angle : [0.0, 0.0, 0.0]
+    size : [0.5, 0.7, 0.8]
+    modelId : 1
+    shadersId : [2, 5]
+    materialId : 1
+    
+  - pos : [1.2, 1.0, 2.0]
+    angle : [0.0, 0.0, 0.0]
+    size : [0.1, 0.1, 0.1]
+    modelId : 1
+    shadersId : [3, 6]

@@ -9,6 +9,8 @@
 #include "logger.h"
 #include "model.h"
 #include "texture.h"
+#include "material.h"
+#include "lights.h"
 
 class Engine : public Listener<InputEvent> {
 
@@ -27,6 +29,8 @@ public:
 		initializeEngine();
 		initializeShaders();
 		initializeTextures();
+		initializeMaterials();
+		initializeLightSources();
 		initializeModels();
 		initializeObjects();
 	}
@@ -67,6 +71,17 @@ public:
 			ASSERT(texture.second != nullptr);
 			delete texture.second;
 		}
+		
+		for (auto material : m_materials) {
+			ASSERT(material.second != nullptr);
+			delete material.second;
+		}
+		
+		for (auto light : m_light_sources) {
+			ASSERT(light != nullptr);
+			delete light;
+		}
+		
 		m_game_object.clear();
 		m_models.clear();
 		m_textures.clear();
@@ -87,6 +102,8 @@ private:
 	void initializeModels();
 	void initializeShaders();
 	void initializeTextures();
+	void initializeMaterials();
+	void initializeLightSources();
 	
 	void engineLogic(){/*TODO*/}
 	
@@ -96,7 +113,8 @@ private:
 	std::map<int, Model*> m_models;
 	std::map<int, Shader*> m_shaders;
 	std::map<int, Texture*> m_textures;
-	
+	std::map<int, Material*> m_materials;
+	std::vector<Light*> m_light_sources;
 	YAML::Node m_config;
 	
 	Logger m_logger;

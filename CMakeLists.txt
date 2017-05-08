@@ -3,6 +3,8 @@ project(game)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+add_executable(game_editor game_editor.cpp) 
+
 add_executable(cube_game 
 	main.cpp
 	debug.cpp
@@ -20,12 +22,29 @@ add_executable(cube_game
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)
 
-configure_file(config.yaml config.yaml COPYONLY)
-configure_file(models/modelCube.obj models/modelCube.obj COPYONLY)
-configure_file(models/suzanna.obj models/suzanna.obj COPYONLY)
-configure_file(textures/dragon.png textures/dragon.png COPYONLY)
-configure_file(shaders/fragment.frag shaders/fragment.frag COPYONLY)
-configure_file(shaders/vertex.vert shaders/vertex.vert COPYONLY)
+add_custom_command(
+	TARGET cube_game PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+		${CMAKE_SOURCE_DIR}/models
+		${CMAKE_CURRENT_BINARY_DIR}/models)
+		
+add_custom_command(
+	TARGET cube_game PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+		${CMAKE_SOURCE_DIR}/shaders
+		${CMAKE_CURRENT_BINARY_DIR}/shaders)
+
+add_custom_command(
+	TARGET cube_game PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+		${CMAKE_SOURCE_DIR}/textures
+		${CMAKE_CURRENT_BINARY_DIR}/textures)
+		
+add_custom_command(
+	TARGET cube_game PRE_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy
+		${CMAKE_SOURCE_DIR}/config.yaml
+		${CMAKE_CURRENT_BINARY_DIR}/config.yaml)
 
 find_package(OpenGL REQUIRED)
 

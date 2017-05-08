@@ -14,11 +14,12 @@ class Physic;
 class GameObject {
 	
 public:
-	GameObject(Vec3f pos, Vec3f angle/*, Logic* logic, Physic* physic*/) :
+	GameObject(Vec3f pos, Vec3f angle, Vec3f size/*, Logic* logic, Physic* physic*/) :
 		m_engine(nullptr),
 		m_view(nullptr),
 		m_pos(pos),
-		m_angle(angle)
+		m_angle(angle),
+		m_size(size)
 	{
 		m_logger.setPrefix("GameObject:: ");
 		m_logger.log("Create GameObject");
@@ -31,12 +32,13 @@ public:
 	
 	void update(Window* window) {
 
-		m_view->draw(window, m_pos, m_angle);
+		m_view->draw(window, m_pos, m_angle, m_size);
 		//m_logger.log("Update GameObject");
 	}
 	
 	void setView(ObjectView* view) {
 		m_view = view;
+		
 	}
 	virtual ~GameObject() {
 		if (m_view != nullptr)
@@ -48,6 +50,7 @@ private:
 	
 	Vec3f m_pos;
 	Vec3f m_angle;
+	Vec3f m_size;
 	Logger m_logger;
 	/*Logic* m_logic;
 	Physic* m_physic;*/

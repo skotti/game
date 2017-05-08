@@ -33,8 +33,12 @@ void Engine::initializeObjects()
 			object["angle"][0].as<float>(), 
 			object["angle"][1].as<float>(), 
 			object["angle"][2].as<float>()};	
-		m_logger.log("Found model : pos = %, %, %, id = %, %, %", pos[0], pos[1], pos[2], angle[0], angle[1], angle[2]);
-		GameObject* game_object = new GameObject(pos, angle);
+		Vec3f size = {
+			object["size"][0].as<float>(), 
+			object["size"][1].as<float>(), 
+			object["size"][2].as<float>()};
+		m_logger.log("Found model : pos = %, %, %, id = %, %, %, size = %, %, %", pos[0], pos[1], pos[2], angle[0], angle[1], angle[2], size[0], size[1], size[2]);
+		GameObject* game_object = new GameObject(pos, angle, size);
 		
 		ShaderProgram* shader_program = new ShaderProgram();
 		for (const auto& shader : object["shadersId"])
@@ -44,7 +48,15 @@ void Engine::initializeObjects()
 		ObjectView* object_view = new ObjectView();
 		object_view->setModel(m_models.at(object["modelId"].as<int>()));
 		object_view->setShaderProgram(shader_program);
-		object_view->setTexture(m_textures.at(object["textureId"].as<int>()));
+		
+		if (object["textureId"])
+			object_view->setTexture(m_textures.at(object["textureId"].as<int>()));
+		if (object["materialId"]){
+		//	m_logger.log("Material m : %", object["materialId"].as<int>());
+			object_view->setMaterial(m_materials.at(object["materialId"].as<int>()));
+		}
+		
+		object_view->setLightSources(m_light_sources);
 		game_object->setView(object_view);
 		
 		registerGameObject(game_object);
@@ -79,5 +91,64 @@ void Engine::initializeTextures()
 }
 
 
+void Engine::initializeMaterials()
+{
+	m_logger.log("Initialize materials");
+	for (const auto& material : m_config["materials"]) {
+		Vec3f ambient = {
+			material["ambient"][0].as<float>(), 
+			material["ambient"][1].as<float>(), 
+			material["ambient"][2].as<float>()};
+		Vec3f specular = {
+			material["specular"][0].as<float>(), 
+			material["specular"][1].as<float>(), 
+			material["specular"][2].as<float>()};	
+		Vec3f diffuse = {
+			material["diffuse"][0].as<float>(), 
+			material["diffuse"][1].as<float>(), 
+			material["diffuse"][2].as<float>()};
+			
+		m_logger.log("Found material : id = %", material["id"].as<int>());
+		auto pair = m_materials.insert(std::pair<int, Material*>(material["id"].as<int>(), new Material(ambient, specular, diffuse, material["shine"].as<float>())));
+		DASSERT(pair.second, "Cannot insert texture twice");
+	}
+}
+
+
+void Engine::initializeLightSources()
+{
+	m_logger.log("Initialize materials");
+	for (const auto& light : m_config["lightsources"]) {
+
+		Vec3f ambient = {
+			light["ambient"][0].as<float>(), 
+			light["ambient"][1].as<float>(), 
+			light["ambient"][2].as<float>()};	
+		Vec3f specular = {
+			light["specular"][0].as<float>(), 
+			light["specular"][1].as<float>(), 
+			light["specular"][2].as<float>()};	
+		Vec3f diffuse = {
+			light["diffuse"][0].as<float>(), 
+			light["diffuse"][1].as<float>(), 
+			light["diffuse"][2].as<float>()};
+		if (light["type"].as<int>() == 1) {//direct light
+			Vec3f direction = {
+			light["direction"][0].as<float>(), 
+			light["direction"][1].as<float>(), 
+			light["direction"][2].as<float>()};
+			m_logger.log("Found material : id = %", light["id"].as<int>());
+			m_light_sources.push_back(new Light(direction, ambient, specular, diffuse, light["type"].as<int>()));
+		} else if (light["type"].as<int>() == 2){
+			Vec3f position = {
+			light["pos"][0].as<float>(), 
+			light["pos"][1].as<float>(), 
+			light["pos"][2].as<float>()};	
+			m_light_sources.push_back(new Light(position, ambient, specular, diffuse, light["constant"].as<float>(),
+																					light["linear"].as<float>(), light["quadratic"].as<float>(), light["type"].as<int>()));
+		}
+	
+	}
+}
 
 

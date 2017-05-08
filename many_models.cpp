@@ -8,6 +8,10 @@
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 #include "vector.h"
+
+
+/*array of m_vertices*/
+
 Model::Model(const std::string& file) {
 	m_logger.setPrefix("Model:: ");
 	m_logger.log("Loading model from '%'", file);
@@ -24,7 +28,8 @@ Model::Model(const std::string& file) {
 	
 	VASSERT(scene->mNumMeshes == 1, "One model required");
 	
-	aiMesh* mesh = scene->mMeshes[0];
+	for (int i = 0; i < scene->mNumMeshes; i++) {
+	aiMesh* mesh = scene->mMeshes[i];
 	
 	m_vertices.resize(mesh->mNumVertices);
 	for (int i = 0; i < mesh->mNumVertices; ++i) {
@@ -64,6 +69,7 @@ Model::Model(const std::string& file) {
 	
  
 	GL_CHECK(glBindVertexArray(0));
+	}
 }
 
 Model::~Model()
