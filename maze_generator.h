@@ -90,11 +90,6 @@ public:
 	
 	void generate(int len_x, int len_y, int start_x = 0, int start_y = 0);
 	
-	void classicDFS();
-	void findMainPath();
-	void fillFalseCycles();
-	void closeFalceCycles();
-	
 	MazeNode& node(int x, int y) {
 		return node(MazeIndex(x, y));
 	}
@@ -107,13 +102,49 @@ public:
 		return ind.inside(m_len_x, m_len_y);
 	}
 	
+	void setPosition(int x, int y) {
+		if (x != m_last_pos_x || y != m_last_pos_y) {
+			genHeights(x, y);
+		}
+		
+		m_last_pos_x = x;
+		m_last_pos_y = y;
+	}
+	
+	float& height(int x, int y) {
+		return height(MazeIndex(x, y));
+	}
+	
+	float& height(MazeIndex mn) {
+		return m_heights.at(mn.x() + mn.y() * m_len_y);
+	}
+	
+	MazeIndex getStart() const {
+		return MazeIndex(m_start_x, m_start_y);
+	}
+	
+	MazeIndex getEnd() const {
+		return MazeIndex(m_end_x, m_end_y);
+	}
+	
 	void dump(bool path_only = false);
 private:
+	
+	void classicDFS();
+	void findMainPath();
+	void fillFalseCycles();
+	void closeFalceCycles();
+	
+	void genHeights(int x, int y);
 	
 	std::vector<MazeNode> m_nodes;
 	int m_len_x = 0, m_len_y = 0;
 	int m_start_x = 0, m_start_y = 0;
 	int m_end_x = 0, m_end_y = 0;
+	
+	int m_last_pos_x = 0, m_last_pos_y = 0;
+	
+	std::vector<float> m_heights;
 	
 	std::mt19937_64 m_rand;
 };
