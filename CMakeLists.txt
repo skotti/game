@@ -3,8 +3,6 @@ project(game)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
-add_executable(game_editor game_editor.cpp) 
-
 add_executable(cube_game 
 	main.cpp
 	debug.cpp
@@ -21,6 +19,17 @@ add_executable(cube_game
 	)
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)
+
+configure_file(config.yaml config.yaml COPYONLY)
+configure_file(shaders/light_fragment.frag shaders/light_fragment.frag COPYONLY)
+configure_file(shaders/light_vertex.vert shaders/light_vertex.vert COPYONLY)
+configure_file(shaders/material_fragment.frag shaders/material_fragment.frag COPYONLY)
+configure_file(shaders/material_vertex.vert shaders/material_vertex.vert COPYONLY)
+configure_file(shaders/texture_fragment.frag shaders/texture_fragment.frag COPYONLY)
+configure_file(shaders/texture_vertex.vert shaders/texture_vertex.vert COPYONLY)
+
+configure_file(models/modelCube.obj models/modelCube.obj COPYONLY)
+configure_file(models/suzanna.obj models/suzanna.obj COPYONLY)
 
 add_custom_command(
 	TARGET cube_game PRE_BUILD

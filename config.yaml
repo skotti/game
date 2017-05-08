@@ -1,8 +1,8 @@
 models :
   - file : models/modelCube.obj
     id : 1
-  - file : models/suzanna.obj
-    id : 2
+#  - file : models/suzanna.obj
+#    id : 2
     
 shaders :
   vertex:
@@ -21,16 +21,16 @@ shaders :
       id : 6
 
 textures :
-  - file : textures/wood.png
-    id : 1
-  - file : textures/container.png
-    id : 2
-  - file : textures/concrete.jpg
-    id : 3
-  - file : textures/earth.png
-    id : 4
-  - file : textures/grass.png
-    id : 5
+#  - file : textures/wood.png
+#    id : 1
+#  - file : textures/container.png
+#    id : 2
+#  - file : textures/concrete.jpg
+#    id : 3
+#  - file : textures/earth.png
+#    id : 4
+#  - file : textures/grass.png
+#    id : 5
     
 materials : 
   - ambient : [0.0215, 0.1745, 0.0215]
