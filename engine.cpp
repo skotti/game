@@ -3,6 +3,9 @@
 
 #include "stl_headers.h"
 #include "shader.h"
+#include "math.h"
+
+#include <random>
 
 void Engine::initializeEngine()
 {
@@ -150,5 +153,65 @@ void Engine::initializeLightSources()
 	
 	}
 }
+/* сделать зазоры*/
+void Engine::initializeMaze() {
+	int size_x = 10;
+	int size_y = 20;
+	int start_x = 5;
+	int start_y = 0;
+	float width = 0.5;
+	m_generator.generate(size_x, size_y, start_x, start_y);
+	
+	std::mt19937_64 m_rand;
+	std::uniform_real_distribution<> dis(0.0, 1.0);
+	
+	Vec3f pos;
+	Vec3f size;
+	Vec3f angle = {0.0, 0.0, 0.0};
+	float camera_pos;
+	for (int i = 0; i < size_x; i++)
+		for (int j = 0; j < size_y; j++) {
+			float rand = static_cast<float>(dis(m_rand));
+			if (i == 0 && j == 0)
+				camera_pos = rand;
+			size = Vec3f{width, rand, width};
+			pos = Vec3f{static_cast<float>(i+0.5)*width, 0.0, static_cast<float>(j+0.5)*width};
+			GameObject* game_object = new GameObject(pos, angle, size);
+			
+			ShaderProgram* shader_program = new ShaderProgram();
+			shader_program->attach(m_shaders.at(2));
+			shader_program->attach(m_shaders.at(5));
+			shader_program->compile();
+			
+			ObjectView* object_view = new ObjectView();
+			object_view->setModel(m_models.at(1));
+			object_view->setShaderProgram(shader_program);
+			object_view->setMaterial(m_materials.at(1));
+			object_view->setLightSources(m_light_sources);
+			game_object->setView(object_view);
+		
+			registerGameObject(game_object);
+		}
+		
+		m_window->getCamera().setPos(Vec3f{static_cast<float>(0.0)*width, camera_pos-0.1f, static_cast<float>(0.0)*width});
 
+}
 
+/*void Engine::logic() {
+	glm::vec3 pos = m_window->getCamera().getPos();
+	Vec3f player_pos(pos.x, pos.y, pos.z);
+	
+	int cur_cube_i = floor(pos.x / 0.5);
+	int cur_cube_j = floor(pos.y / 0.5); 
+	
+// 	for (int i = 0; i < 8; i++){
+// 		MazeNode node = m_generator.node(cur_cube_i, cur_cube_j);
+// 		if (node.dir(UP))
+// 	}
+	
+	for (int i = 0; i < m_generator.getSizeX(); i++)
+		for (int j = 0; j < m_generator.getSizeY(); j++) {
+			
+		}
+			
+}*/

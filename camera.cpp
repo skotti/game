@@ -3,10 +3,11 @@
 void Camera::onEvent(InputEvent event)
 {
 	if (event == InputEvent::FORWARD) {
-		 m_camera_pos = m_camera_pos + m_shift_speed * m_camera_front;
+		m_camera_pos = m_camera_pos + m_shift_speed * glm::normalize(glm::vec3(m_camera_front.x, 0, m_camera_front.z));
   }
   if (event == InputEvent::BACKWARD) {
-		 m_camera_pos = m_camera_pos - m_shift_speed * m_camera_front;;
+
+		 m_camera_pos = m_camera_pos - m_shift_speed * glm::normalize(glm::vec3(m_camera_front.x, 0, m_camera_front.z));
   }
   if (event == InputEvent::SHIFT_LEFT) {
 		 m_camera_pos = m_camera_pos - glm::normalize(glm::cross(m_camera_front, m_camera_up)) * m_shift_speed;
@@ -14,12 +15,7 @@ void Camera::onEvent(InputEvent event)
   if (event == InputEvent::SHIFT_RIGHT) {
 		 m_camera_pos = m_camera_pos + glm::normalize(glm::cross(m_camera_front, m_camera_up)) * m_shift_speed;
   }
-  if (event == InputEvent::UP) {
-		rotate(0, m_rotate_speed);
-  }
-  if (event == InputEvent::DOWN) {
-		rotate(0, -m_rotate_speed);
-  }
+
   if (event == InputEvent::ROTATE_LEFT) {
 		rotate(-m_rotate_speed, 0);
   }

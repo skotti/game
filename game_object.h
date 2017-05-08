@@ -50,6 +50,7 @@ private:
 	
 	Vec3f m_pos;
 	Vec3f m_angle;
+	
 	Vec3f m_size;
 	Logger m_logger;
 	/*Logic* m_logic;

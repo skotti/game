@@ -11,6 +11,7 @@
 #include "texture.h"
 #include "material.h"
 #include "lights.h"
+#include "maze_generator.h"
 
 class Engine : public Listener<InputEvent> {
 
@@ -32,6 +33,7 @@ public:
 		initializeMaterials();
 		initializeLightSources();
 		initializeModels();
+		initializeMaze();
 		initializeObjects();
 	}
 	
@@ -104,6 +106,7 @@ private:
 	void initializeTextures();
 	void initializeMaterials();
 	void initializeLightSources();
+	void initializeMaze();
 	
 	void engineLogic(){/*TODO*/}
 	
@@ -116,7 +119,9 @@ private:
 	std::map<int, Material*> m_materials;
 	std::vector<Light*> m_light_sources;
 	YAML::Node m_config;
+	std::vector<float> m_maze_heights;
 	
+	MazeGenerator m_generator;
 	Logger m_logger;
 	
 	Window* m_window;

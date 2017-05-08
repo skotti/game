@@ -5,6 +5,7 @@
 #include "input_event.h"
 #include "mouse_event.h"
 #include "listener.h"
+#include "vector.h"
 class Camera : public Listener<InputEvent>, public Listener<MouseEvent> {
 public:
 	
@@ -14,6 +15,10 @@ public:
 	glm::vec3 getPos() const { return m_camera_pos; }
 	glm::vec3 getFront() const { return m_camera_front; }
 	glm::vec3 getUp() const { return m_camera_up; }
+	
+	glm::vec3 setPos(Vec3f pos) { m_camera_pos = glm::vec3(pos[0], pos[1], pos[2]); }
+	glm::vec3 setFront(Vec3f front) { m_camera_front = glm::vec3(front[0], front[1], front[2]); }
+	glm::vec3 setUp(Vec3f up) { m_camera_up = glm::vec3(up[0], up[1], up[2]); }
 	
 	virtual ~Camera() {}
 	
@@ -27,7 +32,7 @@ private:
 	GLfloat m_yaw = -90.0f;
 	GLfloat m_pitch = 0.0f;
 	
-	glm::vec3 m_camera_pos = glm::vec3(0.0f, 1.0f, 3.0f);
+	glm::vec3 m_camera_pos = glm::vec3(0.0f, 0.7f, 3.0f);
 	glm::vec3 m_camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 m_camera_up = glm::vec3(0.0f, 1.0f,  0.0f);
 	
@@ -35,7 +40,7 @@ private:
 	GLfloat m_lastY =  m_camera_pos.y;
 	bool m_fisrt_mouse = true;
 	
-	GLfloat m_shift_speed = 0.2;
+	GLfloat m_shift_speed = 0.01;
 	GLfloat m_rotate_speed = 30;
 };
 

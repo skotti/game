@@ -88,47 +88,47 @@ lightsources :
     id : 5
     
 objects : 
-  - pos : [0.0, 0.0, 0.0]
-    angle : [0.0, 0.0, 0.0]
-    size : [1.0, 1.0, 1.0]
-    modelId : 1
-    shadersId : [2, 5]
-    materialId : 1
+  #- pos : [0.0, 0.0, 0.0]
+    #angle : [0.0, 0.0, 0.0]
+    #size : [1.0, 1.0, 1.0]
+    #modelId : 1
+    #shadersId : [2, 5]
+    #materialId : 1
     
-  - pos : [2.0, 0.0, 0.0]
-    angle : [0.0, 0.0, 0.0]
-    size : [0.5, 0.5, 0.5]
-    modelId : 1
-    shadersId : [2, 5]
-    materialId : 1
+  #- pos : [2.0, 0.0, 0.0]
+    #angle : [0.0, 0.0, 0.0]
+    #size : [0.5, 0.5, 0.5]
+    #modelId : 1
+    #shadersId : [2, 5]
+    #materialId : 1
     
-  - pos : [4.0, 0.0, 0.0]
-    angle : [0.0, 0.0, 0.0]
-    size : [0.8, 0.8, 0.8]
-    modelId : 1
-    shadersId : [2, 5]
-    materialId : 1
+  #- pos : [4.0, 0.0, 0.0]
+    #angle : [0.0, 0.0, 0.0]
+    #size : [0.8, 0.8, 0.8]
+    #modelId : 1
+    #shadersId : [2, 5]
+    #materialId : 1
     
-  - pos : [0.0, 0.0, 2.0]
-    angle : [0.0, 0.0, 0.0]
-    size : [1.0, 1.0, 1.0]
-    modelId : 1
-    shadersId : [2, 5]
-    materialId : 1
+  #- pos : [0.0, 0.0, 2.0]
+    #angle : [0.0, 0.0, 0.0]
+    #size : [1.0, 1.0, 1.0]
+    #modelId : 1
+    #shadersId : [2, 5]
+    #materialId : 1
     
-  - pos : [0.0, 0.0, 4.0]
-    angle : [0.0, 0.0, 0.0]
-    size : [0.7, 0.7, 0.7]
-    modelId : 1
-    shadersId : [2, 5]
-    materialId : 1
+  #- pos : [0.0, 0.0, 4.0]
+    #angle : [0.0, 0.0, 0.0]
+    #size : [0.7, 0.7, 0.7]
+    #modelId : 1
+    #shadersId : [2, 5]
+    #materialId : 1
     
-  - pos : [6.0, 0.0, 0.0]
-    angle : [0.0, 0.0, 0.0]
-    size : [0.5, 0.7, 0.8]
-    modelId : 1
-    shadersId : [2, 5]
-    materialId : 1
+  #- pos : [6.0, 0.0, 0.0]
+    #angle : [0.0, 0.0, 0.0]
+    #size : [0.5, 0.7, 0.8]
+    #modelId : 1
+    #shadersId : [2, 5]
+    #materialId : 1
     
   - pos : [1.2, 1.0, 2.0]
     angle : [0.0, 0.0, 0.0]
