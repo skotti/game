@@ -9,6 +9,10 @@
 
 #include <random>
 
+const float Engine::S_BLOCK_WIDTH = 0.5;
+const float Engine::S_BLOCK_HEIGHT = 0.9;
+const float Engine::S_PLAYER_HEIGHT = 0.1;
+
 void Engine::initializeEngine()
 {
 	m_config = YAML::LoadFile("config.yaml");
@@ -161,20 +165,18 @@ void Engine::initializeMaze() {
 	int size_y = 20;
 	int start_x = 5;
 	int start_y = 2;
-	m_block_width = 1;
-	m_block_height = 0.2;
 	m_generator.generate(size_x, size_y, start_x, start_y);
 	
 	auto start_pos = m_generator.getStart();
-	m_window->getCamera().setPos(Vec3f{(start_pos.x() + 0.5f)*m_block_width, m_generator.height(start_pos) + 0.1f, (start_pos.y()+0.5f)*m_block_width});
+	m_window->getCamera().setPos(Vec3f{(start_pos.x() + 0.5f)*S_BLOCK_WIDTH, m_generator.height(start_pos)*S_BLOCK_HEIGHT + S_PLAYER_HEIGHT, (start_pos.y()+0.5f)*S_BLOCK_WIDTH});
 	
 	Vec3f pos;
 	Vec3f size;
 	Vec3f angle = {0.0, 0.0, 0.0};
 	for (int j = 0; j < size_y; j++)
 		for (int i = 0; i < size_x; i++) {
-			size = Vec3f{m_block_width, m_generator.height(i, j)*0.1, m_block_width};
-			pos = Vec3f{static_cast<float>(i+0.5)*m_block_width, 0.0f, static_cast<float>(j+0.5)*m_block_width};
+			size = Vec3f{S_BLOCK_WIDTH, m_generator.height(i, j)*S_BLOCK_HEIGHT, S_BLOCK_WIDTH};
+			pos = Vec3f{static_cast<float>(i+0.5)*S_BLOCK_WIDTH, 0.0f, static_cast<float>(j+0.5)*S_BLOCK_WIDTH};
 			GameObject* game_object = new GameObject(pos, angle, size, new MazeBlockLogic(i, j));
 			
 			ShaderProgram* shader_program = new ShaderProgram();
@@ -197,9 +199,10 @@ void Engine::initializeMaze() {
 void Engine::engineLogic() {
 	glm::vec3 pos = m_window->getCamera().getPos();
 	
-	m_logger.log("pos = %, %, %", pos.x, pos.y, pos.z);
-	int cur_cube_i = floor(pos.x / m_block_width);
-	int cur_cube_j = floor(pos.z / m_block_width);
+	int cur_cube_i = floor(pos.x / S_BLOCK_WIDTH);
+	int cur_cube_j = floor(pos.z / S_BLOCK_WIDTH);
+	
+	m_logger.log("pos = %, %, %, ind = %, %", pos.x, pos.y, pos.z, cur_cube_i, cur_cube_j);
 	
 	m_generator.setPosition(cur_cube_i, cur_cube_j);
 }

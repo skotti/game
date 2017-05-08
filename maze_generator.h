@@ -105,6 +105,8 @@ public:
 	}
 	
 	void setPosition(int x, int y) {
+		assert(0 <= x && x < m_len_x);
+		assert(0 <= y && y < m_len_y);
 		if (x != m_last_pos_x || y != m_last_pos_y) {
 			genHeights(x, y);
 		}

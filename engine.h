@@ -90,6 +90,11 @@ public:
 	
 	MazeGenerator& getMazeGenerator() { return m_generator; }
 	
+	static const float S_BLOCK_HEIGHT;
+	static const float S_BLOCK_WIDTH;
+	static const float S_PLAYER_HEIGHT;
+	
+	
 private:
 	
 	void registerGameObject(GameObject* game_object) {
@@ -121,8 +126,6 @@ private:
 	YAML::Node m_config;
 	
 	MazeGenerator m_generator;
-	float m_block_width;
-	float m_block_height;
 	
 	
 	Logger m_logger;

@@ -75,8 +75,8 @@ void ObjectView::draw(Window* window, Vec3f pos, Vec3f angle, Vec3f size)
 	
 	GLint modelLoc = GL_CHECK(glGetUniformLocation(program, "model"));
 	glm::mat4 model;
-	model = glm::scale(model, glm::vec3(size[0], size[1], size[2]));
 	model = glm::translate(model, glm::vec3(pos[0], pos[1], pos[2]));
+	model = glm::scale(model, glm::vec3(size[0], size[1], size[2]));
 	model = glm::rotate(model, 0.0f, glm::vec3(1.0f, 0.3f, 0.5f));
 	GL_CHECK(glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)));
 	//glDrawArrays(GL_TRIANGLES, 0, 36);

@@ -1,10 +1,16 @@
 #ifndef GAME_LOGIC_H
 #define GAME_LOGIC_H
 
+#include "logger.h"
+
 class GameObject;
 
 class GameLogic {
 public:
+	GameLogic() {
+		m_logger.setPrefix("GameObject: ");
+		
+	}
 	
 	virtual void logic() = 0;
 	virtual ~GameLogic() {}
@@ -14,6 +20,8 @@ public:
 	}
 protected:
 	GameObject* m_game_object = nullptr;
+	
+	Logger m_logger;
 };
 
 class EmptyLogic : public GameLogic {
@@ -35,7 +43,7 @@ public:
 	
 	virtual ~MazeBlockLogic() {}
 private:
-	
+	static const float S_DELTA_H;
 	int m_i = 0, m_j = 0;
 };
 
