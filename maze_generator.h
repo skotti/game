@@ -84,6 +84,8 @@ private:
 
 class MazeGenerator {
 public:
+	MazeGenerator() {}
+	
 	MazeGenerator(int len_x, int len_y, int start_x = 0, int start_y = 0) {
 		generate(len_x, len_y, start_x, start_y);
 	}
@@ -116,11 +118,15 @@ public:
 	}
 	
 	float& height(MazeIndex mn) {
-		return m_heights.at(mn.x() + mn.y() * m_len_y);
+		return m_heights.at(mn.x() + mn.y() * m_len_x);
 	}
 	
 	MazeIndex getStart() const {
 		return MazeIndex(m_start_x, m_start_y);
+	}
+	
+	MazeIndex getLen() const {
+		return MazeIndex(m_len_x, m_len_y);
 	}
 	
 	MazeIndex getEnd() const {

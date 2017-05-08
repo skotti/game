@@ -51,11 +51,10 @@ public:
 	
 	void update() {
 		//m_logger.log("Update engine");
-		
+		engineLogic();
 		for (auto&& obj : m_game_object) {
 			obj->update(m_window);
 		}
-		engineLogic();
 	}
 	
 	virtual ~Engine() {
@@ -89,15 +88,15 @@ public:
 		m_textures.clear();
 	}
 	
+	MazeGenerator& getMazeGenerator() { return m_generator; }
+	
 private:
 	
 	void registerGameObject(GameObject* game_object) {
 		m_logger.log("Register game object");
 		game_object->bindEngine(this);
 		m_game_object.push_back(game_object);
-		
 	}
-	
 	
 	void initializeEngine();
 	void initializeObjects();
@@ -108,20 +107,24 @@ private:
 	void initializeLightSources();
 	void initializeMaze();
 	
-	void engineLogic(){/*TODO*/}
+	void engineLogic();
 	
 	bool m_exit_required;
 		
 	std::list<GameObject*> m_game_object;
+	
 	std::map<int, Model*> m_models;
 	std::map<int, Shader*> m_shaders;
 	std::map<int, Texture*> m_textures;
 	std::map<int, Material*> m_materials;
 	std::vector<Light*> m_light_sources;
 	YAML::Node m_config;
-	std::vector<float> m_maze_heights;
 	
 	MazeGenerator m_generator;
+	float m_block_width;
+	float m_block_height;
+	
+	
 	Logger m_logger;
 	
 	Window* m_window;

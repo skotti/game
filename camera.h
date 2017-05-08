@@ -32,7 +32,7 @@ private:
 	GLfloat m_yaw = -90.0f;
 	GLfloat m_pitch = 0.0f;
 	
-	glm::vec3 m_camera_pos = glm::vec3(0.0f, 0.7f, 3.0f);
+	glm::vec3 m_camera_pos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 m_camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 m_camera_up = glm::vec3(0.0f, 1.0f,  0.0f);
 	

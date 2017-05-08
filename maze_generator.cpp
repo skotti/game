@@ -44,6 +44,7 @@ void MazeGenerator::generate(int len_x, int len_y, int start_x, int start_y) {
 	
 	m_last_pos_x = m_start_x;
 	m_last_pos_y = m_start_y;
+	genHeights(m_start_x, m_start_y);
 }
 
 void MazeGenerator::classicDFS() {
@@ -312,6 +313,8 @@ void MazeGenerator::closeFalceCycles()
 
 void MazeGenerator::genHeights(int x, int y)
 {
+	m_heights.resize(m_len_x * m_len_y);
+	
 	MazeIndex cur(x, y);
 	
 	float min_height = 1.0;

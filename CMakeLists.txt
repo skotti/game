@@ -17,6 +17,7 @@ add_executable(cube_game
 	mouse_notifier.cpp
 	texture.cpp
 	maze_generator.cpp
+	game_logic.cpp
 	)
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)
