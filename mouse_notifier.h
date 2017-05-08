@@ -10,10 +10,15 @@
 #include "input_event.h"
 #include "logger.h"
 #include "window.h"
+#include "mouse_event.h"
+
+class Window;
 
 class MouseNotifier : public Notifier<MouseEvent> {
 public:
-	MouseNotifier(Window& window);
+	MouseNotifier();
+	
+	void setWindow(Window& window);
 	
 	void input();
 	

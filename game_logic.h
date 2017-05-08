@@ -15,7 +15,7 @@ public:
 	virtual void logic() = 0;
 	virtual ~GameLogic() {}
 	
-	void setGameObject(GameObject* game_object) {
+	virtual void setGameObject(GameObject* game_object) {
 		m_game_object = game_object;
 	}
 protected:

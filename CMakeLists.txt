@@ -13,11 +13,12 @@ add_executable(cube_game
 	window.cpp
 	object_view.cpp
 	shader.cpp
-	camera.cpp
 	mouse_notifier.cpp
 	texture.cpp
 	maze_generator.cpp
 	game_logic.cpp
+	player_logic.cpp
+	game_object.cpp
 	)
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)

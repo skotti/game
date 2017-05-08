@@ -12,7 +12,8 @@
 
 class InputNotifier : public Notifier<InputEvent> {
 public:
-	InputNotifier(Window& window);
+	InputNotifier();
+	void setWindow(Window& window);
 	void input();
 	
 private:

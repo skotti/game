@@ -20,10 +20,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
-InputNotifier::InputNotifier(Window& window) {
+InputNotifier::InputNotifier() {
 	m_logger.setPrefix("InputNotifier:: ");
 	m_logger.log("Create InputNotifier");
-	
+}
+
+void InputNotifier::setWindow(Window& window) {
 	g_keys.fill(false);
 	glfwSetKeyCallback(window.getGLWindow(), key_callback);
 //	glfwSetCursorPosCallback(window.getGLWindow(), mouse_callback);

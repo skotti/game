@@ -21,7 +21,7 @@ public:
 		m_hasTexture(false)
 	{}
 	
-	void draw(Window* window, Vec3f pos, Vec3f angle, Vec3f m_size);
+	void draw(Window* window, Vec3f pos, Vec3f front, Vec3f up, Vec3f m_size);
 	
 	void setShaderProgram(ShaderProgram* shader_program) {
 		m_shader_program = shader_program;

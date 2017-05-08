@@ -16,9 +16,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	cursor_y = ypos;
 } 
 
-MouseNotifier::MouseNotifier(Window& window) {
+MouseNotifier::MouseNotifier() {
 	m_logger.setPrefix("MouseNotifier:: ");
 	m_logger.log("Create MouseNotifier");
+	
+}
+
+void MouseNotifier::setWindow(Window& window) {
 	
 	glfwSetCursorPosCallback(window.getGLWindow(), mouse_callback);
 }

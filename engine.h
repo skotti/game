@@ -5,6 +5,7 @@
 #include "gl_headers.h"
 #include "game_object.h"
 #include "input_notifier.h"
+#include "mouse_notifier.h"
 #include "yaml-cpp/yaml.h"
 #include "logger.h"
 #include "model.h"
@@ -12,21 +13,31 @@
 #include "material.h"
 #include "lights.h"
 #include "maze_generator.h"
+#include "player_logic.h"
+#include "window.h"
 
 class Engine : public Listener<InputEvent> {
 
 public:
 	
-	Engine(Window& window) : 
-		m_exit_required(false),
-		m_window(&window)
+	Engine() : 
+		m_exit_required(false)
 	{
 		m_logger.setPrefix("Engine:: ");
 		m_logger.log("Create engine");
+	
+		m_input_notifier.setWindow(m_window);
+		m_mouse_notifier.setWindow(m_window);
 	}
 	
 	void initialize() {
 		m_logger.log("Initialize engine");
+		
+		m_player_logic = new PlayerLogic();
+		m_player_object = new GameObject(m_player_logic);
+		m_player_object->size() = Vec3f{S_PLAYER_WIDTH, S_PLAYER_HEIGHT, S_PLAYER_WIDTH};
+		registerGameObject(m_player_object);
+		
 		initializeEngine();
 		initializeShaders();
 		initializeTextures();
@@ -35,6 +46,10 @@ public:
 		initializeModels();
 		initializeMaze();
 		initializeObjects();
+		
+		m_input_notifier.subscribe(this);
+		m_input_notifier.subscribe(m_player_logic);
+		m_mouse_notifier.subscribe(m_player_logic);
 	}
 	
 	virtual void onEvent(InputEvent event) {
@@ -50,15 +65,24 @@ public:
 	}
 	
 	void update() {
-		//m_logger.log("Update engine");
+		m_window.clearScreen();
+		glfwPollEvents();
+		m_input_notifier.input();
+		m_mouse_notifier.input();
 		engineLogic();
 		for (auto&& obj : m_game_object) {
-			obj->update(m_window);
+			obj->update();
 		}
 		correctPlayerPosition();
+		m_window.swapBuffers();
 	}
 	
 	virtual ~Engine() {
+		
+		m_input_notifier.unsubscribe(m_player_logic);
+		m_mouse_notifier.unsubscribe(m_player_logic);
+		m_input_notifier.unsubscribe(this);
+		
 		for (auto object : m_game_object) {
 			ASSERT(object != nullptr);
 			delete object;
@@ -95,7 +119,12 @@ public:
 	static const float S_BLOCK_WIDTH;
 	static const float S_PLAYER_HEIGHT;
 	static const float S_PLAYER_DELTA;
+	static const float S_PLAYER_WIDTH;
 	
+		
+	Window& getWindow() {
+		return m_window;
+	}
 	
 private:
 	
@@ -134,7 +163,12 @@ private:
 	
 	Logger m_logger;
 	
-	Window* m_window;
+	Window m_window;
+	InputNotifier m_input_notifier;
+	MouseNotifier m_mouse_notifier;
+	
+	GameObject* m_player_object;
+	PlayerLogic* m_player_logic;
 };
 
 #endif

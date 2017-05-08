@@ -7,13 +7,15 @@
 
 #include "game_logic.h"
 #include "utils.h"
+#include "object_view.h"
 
 #include <random>
 
-const float Engine::S_BLOCK_WIDTH = 0.5;
-const float Engine::S_BLOCK_HEIGHT = 0.9;
+const float Engine::S_BLOCK_WIDTH = 1.2;
+const float Engine::S_BLOCK_HEIGHT = 0.8;
 const float Engine::S_PLAYER_HEIGHT = 0.2;
 const float Engine::S_PLAYER_DELTA = 0.01;
+const float Engine::S_PLAYER_WIDTH = 0.2;
 
 void Engine::initializeEngine()
 {
@@ -49,7 +51,7 @@ void Engine::initializeObjects()
 			object["size"][1].as<float>(), 
 			object["size"][2].as<float>()};
 		m_logger.log("Found model : pos = %, %, %, id = %, %, %, size = %, %, %", pos[0], pos[1], pos[2], angle[0], angle[1], angle[2], size[0], size[1], size[2]);
-		GameObject* game_object = new GameObject(pos, angle, size, new EmptyLogic());
+		GameObject* game_object = new GameObject(pos, size, Vec3f{0, 0, 0}, Vec3f{0, 0, 0}, new EmptyLogic());
 		
 		ShaderProgram* shader_program = new ShaderProgram();
 		for (const auto& shader : object["shadersId"])
@@ -171,16 +173,15 @@ void Engine::initializeMaze() {
 	m_maze_components.resize(size_x * size_y);
 	
 	auto start_pos = m_generator.getStart();
-	m_window->getCamera().setPos(glm::vec3((start_pos.x() + 0.5f)*S_BLOCK_WIDTH, m_generator.height(start_pos)*S_BLOCK_HEIGHT/2.0f + S_PLAYER_HEIGHT, (start_pos.y()+0.5f)*S_BLOCK_WIDTH));
+	m_player_object->pos() = Vec3f{(start_pos.x() + 0.5f)*S_BLOCK_WIDTH, m_generator.height(start_pos)*S_BLOCK_HEIGHT/2.0f + S_PLAYER_HEIGHT, (start_pos.y()+0.5f)*S_BLOCK_WIDTH};
 	
 	Vec3f pos;
 	Vec3f size;
-	Vec3f angle = {0.0, 0.0, 0.0};
-	for (int j = 0; j < size_y; j++)
+	for (int j = 0; j < size_y; j++) {
 		for (int i = 0; i < size_x; i++) {
 			size = Vec3f{S_BLOCK_WIDTH, m_generator.height(i, j)*S_BLOCK_HEIGHT, S_BLOCK_WIDTH};
 			pos = Vec3f{static_cast<float>(i+0.5)*S_BLOCK_WIDTH, 0.0f, static_cast<float>(j+0.5)*S_BLOCK_WIDTH};
-			GameObject* game_object = new GameObject(pos, angle, size, new MazeBlockLogic(i, j));
+			GameObject* game_object = new GameObject(pos, size, Vec3f{0, 0, 0}, Vec3f{0, 0, 0}, new MazeBlockLogic(i, j));
 			
 			ShaderProgram* shader_program = new ShaderProgram();
 			shader_program->attach(m_shaders.at(2));
@@ -197,10 +198,11 @@ void Engine::initializeMaze() {
 			registerGameObject(game_object);
 			m_maze_components.at(i + j * size_x) = game_object;
 		}
+	}
 }
 
 void Engine::engineLogic() {
-	glm::vec3 pos = m_window->getCamera().getPos();
+	glm::vec3 pos = toGLMvec3(m_player_object->pos());
 	
 	int cur_cube_i = floor(pos.x / S_BLOCK_WIDTH);
 	int cur_cube_j = floor(pos.z / S_BLOCK_WIDTH);
@@ -212,7 +214,7 @@ void Engine::engineLogic() {
 
 void Engine::correctPlayerPosition()
 {
-	glm::vec3 cur_player_pos = m_window->getCamera().getPos();
+	glm::vec3 cur_player_pos = toGLMvec3(m_player_object->pos());
 	
 	int cur_cube_i = floor(cur_player_pos.x / S_BLOCK_WIDTH);
 	int cur_cube_j = floor(cur_player_pos.z / S_BLOCK_WIDTH);
@@ -236,5 +238,5 @@ void Engine::correctPlayerPosition()
 
 	cur_player_pos.y = cur_player_height;
 	
-	m_window->getCamera().setPos(cur_player_pos);
+	m_player_object->pos() = toVec3f(cur_player_pos);
 }

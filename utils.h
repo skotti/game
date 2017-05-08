@@ -7,4 +7,5 @@
 inline bool isEqual(float a, float b) {
 	return (fabs(a - b) < EPS);
 }
+
 #endif

@@ -4,7 +4,7 @@
 #include "debug.h"
 #include "utils.h"
 
-const float MazeBlockLogic::S_DELTA_H = 0.005;
+const float MazeBlockLogic::S_DELTA_H = 0.02;
 
 void MazeBlockLogic::logic()
 {
