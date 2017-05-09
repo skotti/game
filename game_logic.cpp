@@ -8,11 +8,11 @@ const float MazeBlockLogic::S_DELTA_H = 0.02;
 
 void MazeBlockLogic::logic()
 {
-	Engine* eng = m_game_object->getEngine();
-	MazeGenerator& mg = eng->getMazeGenerator();
+	MazeGenerator& mg = Engine::instance()->getMazeGenerator();
 	float desired_height = mg.height(m_i, m_j) * Engine::S_BLOCK_HEIGHT;
 	ASSERT(m_game_object != nullptr);
-	float& cur_height = m_game_object->size()[1];
+	Vec3f size = m_game_object->getSize();
+	float& cur_height = size[1];
 
 	if (cur_height < desired_height) {
 		if(cur_height + S_DELTA_H < desired_height) {
@@ -28,4 +28,6 @@ void MazeBlockLogic::logic()
 			cur_height = desired_height;
 		}
 	}
+	
+	m_game_object->setSize(size);
 }

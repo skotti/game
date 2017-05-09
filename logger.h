@@ -3,13 +3,12 @@
 
 #include "stl_headers.h"
 #include "printf.h"
+#include "singleton.h"
 
-class Logger {
+class Logger : public Singleton<Logger> {
 public:
-	
-	Logger(std::ostream& os = std::cerr) :
-		m_os(&os)
-	{
+	void setStream(std::ostream& os) {
+		m_os = &os;
 	}
 	
 	void setPrefix(const std::string& prefix) {
@@ -21,7 +20,12 @@ public:
 		printf(*m_os, (m_prefix + format + "\n").c_str(), args...);
 	}
 
-private: 
+
+	Logger() : m_os(&std::cerr)
+	{
+	}
+	
+private:
 	std::ostream* m_os;
 	std::string m_prefix;
 };

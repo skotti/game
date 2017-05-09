@@ -4,12 +4,6 @@
 float cursor_x;
 float cursor_y;
 
-void MouseNotifier::input() {
-	//m_logger.log("Mouse shift detected");
-	MouseEvent mouse_event = {cursor_x, cursor_y};
-	notify(mouse_event);
-}
-
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	cursor_x = xpos;
@@ -17,12 +11,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 } 
 
 MouseNotifier::MouseNotifier() {
-	m_logger.setPrefix("MouseNotifier:: ");
-	m_logger.log("Create MouseNotifier");
-	
+	Logger::instance()->log("Create MouseNotifier");
+	glfwSetCursorPosCallback(Window::instance()->getGLWindow(), mouse_callback);
 }
 
-void MouseNotifier::setWindow(Window& window) {
-	
-	glfwSetCursorPosCallback(window.getGLWindow(), mouse_callback);
+void MouseNotifier::input() {
+	//m_logger.log("Mouse shift detected");
+	MouseEvent mouse_event = {cursor_x, cursor_y};
+	notify(mouse_event);
 }

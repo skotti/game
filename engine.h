@@ -6,7 +6,6 @@
 #include "game_object.h"
 #include "input_notifier.h"
 #include "mouse_notifier.h"
-#include "yaml-cpp/yaml.h"
 #include "logger.h"
 #include "model.h"
 #include "texture.h"
@@ -15,103 +14,43 @@
 #include "maze_generator.h"
 #include "player_logic.h"
 #include "window.h"
+#include "singleton.h"
 
-class Engine : public Listener<InputEvent> {
+class Engine : public Listener<InputEvent>, public Singleton<Engine> {
 
 public:
 	
-	Engine() : 
-		m_exit_required(false)
-	{
-		m_logger.setPrefix("Engine:: ");
-		m_logger.log("Create engine");
-	
-		m_input_notifier.setWindow(m_window);
-		m_mouse_notifier.setWindow(m_window);
-	}
-	
-	void initialize() {
-		m_logger.log("Initialize engine");
-		
-		m_player_logic = new PlayerLogic();
-		m_player_object = new GameObject(m_player_logic);
-		m_player_object->size() = Vec3f{S_PLAYER_WIDTH, S_PLAYER_HEIGHT, S_PLAYER_WIDTH};
-		registerGameObject(m_player_object);
-		
-		initializeEngine();
-		initializeShaders();
-		initializeTextures();
-		initializeMaterials();
-		initializeLightSources();
-		initializeModels();
-		initializeMaze();
-		initializeObjects();
-		
-		m_input_notifier.subscribe(this);
-		m_input_notifier.subscribe(m_player_logic);
-		m_mouse_notifier.subscribe(m_player_logic);
-	}
+	Engine();
 	
 	virtual void onEvent(InputEvent event) {
-		m_logger.log("Process event");
+		Logger::instance()->log("Engine process event");
 		if (event == InputEvent::EXIT) {
 			m_exit_required = true;
 		}
 	}
 	
 	bool isExitRequired() const {
-		//m_logger.log("exitcondition checking"); 
 		return m_exit_required;
 	}
 	
 	void update() {
-		m_window.clearScreen();
+		Window::instance()->clearScreen();
+		
 		glfwPollEvents();
-		m_input_notifier.input();
-		m_mouse_notifier.input();
+		InputNotifier::instance()->input();
+		MouseNotifier::instance()->input();
+		
 		engineLogic();
-		for (auto&& obj : m_game_object) {
+		for (auto&& obj : m_game_object) { 
 			obj->update();
 		}
 		correctPlayerPosition();
-		m_window.swapBuffers();
+		
+		Window::instance()->draw();
+		Window::instance()->swapBuffers();
 	}
 	
-	virtual ~Engine() {
-		
-		m_input_notifier.unsubscribe(m_player_logic);
-		m_mouse_notifier.unsubscribe(m_player_logic);
-		m_input_notifier.unsubscribe(this);
-		
-		for (auto object : m_game_object) {
-			ASSERT(object != nullptr);
-			delete object;
-		}
-		
-		for (auto model : m_models) {
-			ASSERT(model.second != nullptr);
-			delete model.second;
-		}
-		
-		for (auto texture : m_textures) {
-			ASSERT(texture.second != nullptr);
-			delete texture.second;
-		}
-		
-		for (auto material : m_materials) {
-			ASSERT(material.second != nullptr);
-			delete material.second;
-		}
-		
-		for (auto light : m_light_sources) {
-			ASSERT(light != nullptr);
-			delete light;
-		}
-		
-		m_game_object.clear();
-		m_models.clear();
-		m_textures.clear();
-	}
+	virtual ~Engine();
 	
 	MazeGenerator& getMazeGenerator() { return m_generator; }
 	
@@ -121,54 +60,31 @@ public:
 	static const float S_PLAYER_DELTA;
 	static const float S_PLAYER_WIDTH;
 	
-		
-	Window& getWindow() {
-		return m_window;
-	}
-	
 private:
 	
 	void registerGameObject(GameObject* game_object) {
-		m_logger.log("Register game object");
-		game_object->bindEngine(this);
+		Logger::instance()->log("Register game object");
 		m_game_object.push_back(game_object);
 	}
 	
-	void initializeEngine();
-	void initializeObjects();
-	void initializeModels();
-	void initializeShaders();
-	void initializeTextures();
-	void initializeMaterials();
-	void initializeLightSources();
 	void initializeMaze();
 	
 	void engineLogic();
 	void correctPlayerPosition();
 	
-	bool m_exit_required;
+	bool m_exit_required = false;
 		
 	std::list<GameObject*> m_game_object;
 	
-	std::map<int, Model*> m_models;
-	std::map<int, Shader*> m_shaders;
-	std::map<int, Texture*> m_textures;
-	std::map<int, Material*> m_materials;
-	std::vector<Light*> m_light_sources;
 	std::vector<GameObject*> m_maze_components;
-	YAML::Node m_config;
 	
 	MazeGenerator m_generator;
 	
-	
-	Logger m_logger;
-	
-	Window m_window;
 	InputNotifier m_input_notifier;
 	MouseNotifier m_mouse_notifier;
 	
-	GameObject* m_player_object;
-	PlayerLogic* m_player_logic;
+	GameObject* m_player_object = nullptr;
+	
 };
 
 #endif

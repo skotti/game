@@ -11,7 +11,6 @@ add_executable(cube_game
 	model.cpp
 	printf.cpp
 	window.cpp
-	object_view.cpp
 	shader.cpp
 	mouse_notifier.cpp
 	texture.cpp
@@ -19,13 +18,16 @@ add_executable(cube_game
 	game_logic.cpp
 	player_logic.cpp
 	game_object.cpp
+	game_graphic.cpp
+	utils.cpp
 	)
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)
 
-configure_file(config.yaml config.yaml COPYONLY)
 configure_file(shaders/light_fragment.frag shaders/light_fragment.frag COPYONLY)
 configure_file(shaders/light_vertex.vert shaders/light_vertex.vert COPYONLY)
+configure_file(shaders/depth_fragment.frag shaders/depth_fragment.frag COPYONLY)
+configure_file(shaders/depth_vertex.vert shaders/depth_vertex.vert COPYONLY)
 configure_file(shaders/material_fragment.frag shaders/material_fragment.frag COPYONLY)
 configure_file(shaders/material_vertex.vert shaders/material_vertex.vert COPYONLY)
 configure_file(shaders/texture_fragment.frag shaders/texture_fragment.frag COPYONLY)
@@ -33,30 +35,6 @@ configure_file(shaders/texture_vertex.vert shaders/texture_vertex.vert COPYONLY)
 
 configure_file(models/modelCube.obj models/modelCube.obj COPYONLY)
 configure_file(models/suzanna.obj models/suzanna.obj COPYONLY)
-
-add_custom_command(
-	TARGET cube_game PRE_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-		${CMAKE_SOURCE_DIR}/models
-		${CMAKE_CURRENT_BINARY_DIR}/models)
-		
-add_custom_command(
-	TARGET cube_game PRE_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-		${CMAKE_SOURCE_DIR}/shaders
-		${CMAKE_CURRENT_BINARY_DIR}/shaders)
-
-add_custom_command(
-	TARGET cube_game PRE_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-		${CMAKE_SOURCE_DIR}/textures
-		${CMAKE_CURRENT_BINARY_DIR}/textures)
-		
-add_custom_command(
-	TARGET cube_game PRE_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy
-		${CMAKE_SOURCE_DIR}/config.yaml
-		${CMAKE_CURRENT_BINARY_DIR}/config.yaml)
 
 find_package(OpenGL REQUIRED)
 

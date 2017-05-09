@@ -9,17 +9,16 @@
 #include "input_event.h"
 #include "logger.h"
 #include "window.h"
+#include "singleton.h"
 
-class InputNotifier : public Notifier<InputEvent> {
+class InputNotifier : public Notifier<InputEvent>, public Singleton<InputNotifier> {
 public:
 	InputNotifier();
-	void setWindow(Window& window);
+	
 	void input();
 	
 private:
 	bool isKeySet(int key) const;
-
-	Logger m_logger;
 };
 
 #endif

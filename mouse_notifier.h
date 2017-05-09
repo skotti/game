@@ -11,20 +11,14 @@
 #include "logger.h"
 #include "window.h"
 #include "mouse_event.h"
+#include "singleton.h"
 
-class Window;
-
-class MouseNotifier : public Notifier<MouseEvent> {
+class MouseNotifier : public Notifier<MouseEvent>, public Singleton<MouseNotifier> {
 public:
 	MouseNotifier();
 	
-	void setWindow(Window& window);
-	
 	void input();
 	
-private:
-
-	Logger m_logger;
 };
 
 

@@ -10,6 +10,8 @@ class PlayerLogic : public Listener<InputEvent>, public Listener<MouseEvent>, pu
 public:
 	PlayerLogic();
 	
+	~PlayerLogic();
+	
 	virtual void onEvent(InputEvent event) override;
 
 	virtual void onEvent(MouseEvent event) override;

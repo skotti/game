@@ -21,14 +21,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 }
 
 InputNotifier::InputNotifier() {
-	m_logger.setPrefix("InputNotifier:: ");
-	m_logger.log("Create InputNotifier");
-}
-
-void InputNotifier::setWindow(Window& window) {
+	Logger::instance()->log("Create InputNotifier");
+	
 	g_keys.fill(false);
-	glfwSetKeyCallback(window.getGLWindow(), key_callback);
-//	glfwSetCursorPosCallback(window.getGLWindow(), mouse_callback);
+	glfwSetKeyCallback(Window::instance()->getGLWindow(), key_callback);
+	//	glfwSetCursorPosCallback(window.getGLWindow(), mouse_callback);
 }
 
 bool InputNotifier::isKeySet(int key) const {
@@ -38,39 +35,39 @@ bool InputNotifier::isKeySet(int key) const {
 
 void InputNotifier::input() {
 	if (isKeySet(GLFW_KEY_W)) {
-		m_logger.log("Key FORWARD detected");
+		Logger::instance()->log("Key FORWARD detected");
 		notify(InputEvent::FORWARD);
 	}
 	if (isKeySet(GLFW_KEY_S)) {
-		m_logger.log("Key BACKWARD detected");
+		Logger::instance()->log("Key BACKWARD detected");
 		notify(InputEvent::BACKWARD);
 	} 
 	if (isKeySet(GLFW_KEY_A)) {
-		m_logger.log("Key SHIFT_LEFT detected");
+		Logger::instance()->log("Key SHIFT_LEFT detected");
 		notify(InputEvent::SHIFT_LEFT);
 	}
 	if (isKeySet(GLFW_KEY_D)) {
-		m_logger.log("Key SHIFT_RIGHT detected");
+		Logger::instance()->log("Key SHIFT_RIGHT detected");
 		notify(InputEvent::SHIFT_RIGHT);
 	}
 	if (isKeySet(GLFW_KEY_UP)) {
-		m_logger.log("Key UP detected");
+		Logger::instance()->log("Key UP detected");
 		notify(InputEvent::UP);
 	}
 	if (isKeySet(GLFW_KEY_DOWN)) {
-		m_logger.log("Key DOWN detected");
+		Logger::instance()->log("Key DOWN detected");
 		notify(InputEvent::DOWN);
 	} 
 	if (isKeySet(GLFW_KEY_LEFT)) {
-		m_logger.log("Key ROTATE_LEFT detected");
+		Logger::instance()->log("Key ROTATE_LEFT detected");
 		notify(InputEvent::ROTATE_LEFT);
 	}
 	if (isKeySet(GLFW_KEY_RIGHT)) {
-		m_logger.log("Key ROTATE_RIGHT detected");
+		Logger::instance()->log("Key ROTATE_RIGHT detected");
 		notify(InputEvent::ROTATE_RIGHT);
 	}
 	if (isKeySet(GLFW_KEY_ESCAPE)) {
-		m_logger.log("Key EXIT detected");
+		Logger::instance()->log("Key EXIT detected");
 		notify(InputEvent::EXIT);
 	}
 }

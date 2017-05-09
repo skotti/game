@@ -2,23 +2,24 @@
 #define CAMERA_H
 
 #include "gl_headers.h"
+#include "vector.h"
 
 class Camera {
 public:
 	
-	glm::vec3 getPos() const { return m_camera_pos; }
-	glm::vec3 getFront() const { return m_camera_front; }
-	glm::vec3 getUp() const { return m_camera_up; }
+	Vec3f getPos() const { return m_camera_pos; }
+	Vec3f getFront() const { return m_camera_front; }
+	Vec3f getUp() const { return m_camera_up; }
 	
-	void setPos(glm::vec3 pos) { m_camera_pos = pos; }
-	void setFront(glm::vec3 front) { m_camera_front = front; }
-	void setUp(glm::vec3 up) { m_camera_up = up; }
+	void setPos(Vec3f pos) { m_camera_pos = pos; }
+	void setFront(Vec3f front) { m_camera_front = front; }
+	void setUp(Vec3f up) { m_camera_up = up; }
 	
 private:
 	
-	glm::vec3 m_camera_pos = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 m_camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 m_camera_up = glm::vec3(0.0f, 1.0f,  0.0f);
+	Vec3f m_camera_pos = Vec3f{0.0f, 0.0f, 0.0f};
+	Vec3f m_camera_front = Vec3f{0.0f, 0.0f, -1.0f};
+	Vec3f m_camera_up = Vec3f{0.0f, 1.0f,  0.0f};
 };
 
 #endif

@@ -9,51 +9,59 @@ const GLfloat PlayerLogic::S_SHIFT_SPEED = 0.01f;
 const GLfloat PlayerLogic::S_ROTATE_SPEED = 30.0f;
 
 PlayerLogic::PlayerLogic() {
+	
+	InputNotifier::instance()->subscribe(this);
+	MouseNotifier::instance()->subscribe(this);
+}
+
+PlayerLogic::~PlayerLogic() {
+	InputNotifier::instance()->unsubscribe(this);
+	MouseNotifier::instance()->unsubscribe(this);
 }
 
 void PlayerLogic::setGameObject(GameObject* game_object) {
 	GameLogic::setGameObject(game_object);
 	assert(m_game_object != nullptr);
-	m_last_x = m_game_object->pos()[0];
-	m_last_y = m_game_object->pos()[1];
+	m_last_x = m_game_object->getPos()[0];
+	m_last_y = m_game_object->getPos()[1];
 }
 
 void PlayerLogic::logic()
 {
-	Camera& camera = m_game_object->getEngine()->getWindow().getCamera();
-	camera.setPos(toGLMvec3(m_game_object->pos()));
-	camera.setFront(toGLMvec3(m_game_object->front()));
-	camera.setUp(toGLMvec3(m_game_object->up()));
+	Camera& camera = Window::instance()->getCamera();
+	camera.setPos(m_game_object->getPos());
+	camera.setFront(m_game_object->getFront());
+	camera.setUp(m_game_object->getUp());
 }
 
 void PlayerLogic::onEvent(InputEvent event)
 {
-	int size_x = m_game_object->getEngine()->getMazeGenerator().getLen().x();
-	int size_y = m_game_object->getEngine()->getMazeGenerator().getLen().y();
+	int size_x = Engine::instance()->getMazeGenerator().getLen().x();
+	int size_y = Engine::instance()->getMazeGenerator().getLen().y();
 	
-	glm::vec3 border_pos_plus;
-	glm::vec3 border_pos_minus;
+	Vec3f border_pos_plus{0, 0, 0};
+	Vec3f border_pos_minus{0, 0, 0};
 	
-	glm::vec3 m_player_pos = toGLMvec3(m_game_object->pos());
-	glm::vec3 m_player_front = toGLMvec3(m_game_object->front());
-	glm::vec3 m_player_up = toGLMvec3(m_game_object->up());
+	glm::vec3 m_player_pos = toGLMvec3(m_game_object->getPos());
+	glm::vec3 m_player_front = toGLMvec3(m_game_object->getFront());
+	glm::vec3 m_player_up = toGLMvec3(m_game_object->getUp());
 	
-	int ind_i = floor(m_player_pos.x / Engine::S_BLOCK_WIDTH);
-	int ind_j = floor(m_player_pos.z / Engine::S_BLOCK_WIDTH);
+	int ind_i = floor(m_player_pos[0] / Engine::S_BLOCK_WIDTH);
+	int ind_j = floor(m_player_pos[2] / Engine::S_BLOCK_WIDTH);
 	
-	border_pos_plus.x = (ind_i + 1) * Engine::S_BLOCK_WIDTH - Engine::S_PLAYER_WIDTH;
-	border_pos_plus.z = (ind_j + 1) * Engine::S_BLOCK_WIDTH - Engine::S_PLAYER_WIDTH;
-	border_pos_minus.x = ind_i * Engine::S_BLOCK_WIDTH + Engine::S_PLAYER_WIDTH;
-	border_pos_minus.z = ind_j * Engine::S_BLOCK_WIDTH + Engine::S_PLAYER_WIDTH;
+	border_pos_plus[0] = (ind_i + 1) * Engine::S_BLOCK_WIDTH - Engine::S_PLAYER_WIDTH;
+	border_pos_plus[2] = (ind_j + 1) * Engine::S_BLOCK_WIDTH - Engine::S_PLAYER_WIDTH;
+	border_pos_minus[0] = ind_i * Engine::S_BLOCK_WIDTH + Engine::S_PLAYER_WIDTH;
+	border_pos_minus[2] = ind_j * Engine::S_BLOCK_WIDTH + Engine::S_PLAYER_WIDTH;
 	
-	MazeGenerator& mg = m_game_object->getEngine()->getMazeGenerator();
+	MazeGenerator& mg = Engine::instance()->getMazeGenerator();
 	MazeNode& cur_mn = mg.node(ind_i, ind_j);
 	
 	if (event == InputEvent::FORWARD) {
-		m_player_pos = m_player_pos + S_SHIFT_SPEED * glm::normalize(glm::vec3(m_player_front.x, 0, m_player_front.z));
+		m_player_pos = m_player_pos + S_SHIFT_SPEED * glm::normalize(glm::vec3(m_player_front[0], 0, m_player_front[2]));
 	}
 	if (event == InputEvent::BACKWARD) {
-		m_player_pos = m_player_pos - S_SHIFT_SPEED * glm::normalize(glm::vec3(m_player_front.x, 0, m_player_front.z));
+		m_player_pos = m_player_pos - S_SHIFT_SPEED * glm::normalize(glm::vec3(m_player_front[0], 0, m_player_front[2]));
 	}
 	if (event == InputEvent::SHIFT_LEFT) {
 		m_player_pos = m_player_pos - glm::normalize(glm::cross(m_player_front, m_player_up)) * S_SHIFT_SPEED;
@@ -62,17 +70,17 @@ void PlayerLogic::onEvent(InputEvent event)
 		m_player_pos = m_player_pos + glm::normalize(glm::cross(m_player_front, m_player_up)) * S_SHIFT_SPEED;
 	}
 	
-	if (m_player_pos.x > border_pos_plus.x && !cur_mn.dir(MazeDir::RIGHT)) {
-		m_player_pos.x = border_pos_plus.x;
+	if (m_player_pos[0] > border_pos_plus[0] && !cur_mn.dir(MazeDir::RIGHT)) {
+		m_player_pos[0] = border_pos_plus[0];
 	}
-	if (m_player_pos.x < border_pos_minus.x && !cur_mn.dir(MazeDir::LEFT)) {
-		m_player_pos.x = border_pos_minus.x;
+	if (m_player_pos[0] < border_pos_minus[0] && !cur_mn.dir(MazeDir::LEFT)) {
+		m_player_pos[0] = border_pos_minus[0];
 	}
-	if (m_player_pos.z > border_pos_plus.z && !cur_mn.dir(MazeDir::UP)) {
-		m_player_pos.z = border_pos_plus.z;
+	if (m_player_pos[2] > border_pos_plus[2] && !cur_mn.dir(MazeDir::UP)) {
+		m_player_pos[2] = border_pos_plus[2];
 	}
-	if (m_player_pos.z < border_pos_minus.z && !cur_mn.dir(MazeDir::DOWN)) {
-		m_player_pos.z = border_pos_minus.z;
+	if (m_player_pos[2] < border_pos_minus[2] && !cur_mn.dir(MazeDir::DOWN)) {
+		m_player_pos[2] = border_pos_minus[2];
 	}
 	
 	if (event == InputEvent::ROTATE_LEFT) {
@@ -82,9 +90,9 @@ void PlayerLogic::onEvent(InputEvent event)
 		rotate(S_ROTATE_SPEED, 0);
 	}
 	
-	m_game_object->pos() = toVec3f(m_player_pos);
-	m_game_object->front() = toVec3f(m_player_front);
-	m_game_object->up() = toVec3f(m_player_up);
+	m_game_object->setPos(toVec3f(m_player_pos));
+	m_game_object->setFront(toVec3f(m_player_front));
+	m_game_object->setUp(toVec3f(m_player_up));
 }
 
 void PlayerLogic::onEvent(MouseEvent event)
@@ -96,12 +104,12 @@ void PlayerLogic::onEvent(MouseEvent event)
 		m_first_mouse = false;
 	}
 
-	GLfloat xoffset = event.xpos - m_last_x;//compute offset from last MOUSE position
-	GLfloat yoffset = m_last_y - event.ypos;//compute offset from last MOUSE position
+	float xoffset = event.xpos - m_last_x;//compute offset from last MOUSE position
+	float yoffset = m_last_y - event.ypos;//compute offset from last MOUSE position
 	m_last_x = event.xpos;//set new last X position
 	m_last_y = event.ypos;//set new last Y position
 
-	GLfloat sensitivity = 0.05;
+	float sensitivity = 0.05;
 	xoffset *= sensitivity;//minor offset
 	yoffset *= sensitivity;//minor offset
 
@@ -113,12 +121,12 @@ void PlayerLogic::onEvent(MouseEvent event)
 	if(m_pitch < -89.0f)
 		m_pitch = -89.0f;
 
-	glm::vec3 front;
-	front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-	front.y = sin(glm::radians(m_pitch));
-	front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	glm::vec3 front(
+		cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)),
+		sin(glm::radians(m_pitch)),
+		sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
 	
-	m_game_object->front() = toVec3f(glm::normalize(front));
+	m_game_object->setFront(toVec3f(glm::normalize(front)));
 }
 
 void PlayerLogic::rotate(GLfloat xoffset, GLfloat yoffset) {
@@ -135,10 +143,10 @@ void PlayerLogic::rotate(GLfloat xoffset, GLfloat yoffset) {
 	if(m_pitch < -89.0f)
 		m_pitch = -89.0f;
 
-	glm::vec3 front;
-	front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-	front.y = sin(glm::radians(m_pitch));
-	front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	glm::vec3 front(
+		cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)),
+		sin(glm::radians(m_pitch)),
+		sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
 	
-	m_game_object->front() = toVec3f(glm::normalize(front));
+	m_game_object->setFront(toVec3f(glm::normalize(front)));
 }

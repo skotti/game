@@ -7,12 +7,17 @@
 class Light {
 
 public:
+	Light(){}
+	
 	Light(Vec3f direction, Vec3f ambient, Vec3f specular, Vec3f diffuse, int type) :
 		m_direction(direction),
 		m_ambient(ambient),
 		m_specular(specular),
 		m_diffuse(diffuse),
-		m_type(type) {};
+		m_type(type) {
+			m_position = Vec3f{-2.0f, 4.0f, -1.0f};
+		};
+		
 	Light(Vec3f position, Vec3f ambient, Vec3f specular, Vec3f diffuse, float constant, float linear, float quadratic, int type) :
 		m_position(position),
 		m_ambient(ambient),

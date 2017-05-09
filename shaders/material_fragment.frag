@@ -27,13 +27,14 @@ struct PointLight {
     vec3 specular;
 };
 
-#define NR_POINT_LIGHTS 4
+#define NR_POINT_LIGHTS 1
 
 in vec3 worldVert;
 in vec3 Normal;
 
 out vec4 color;
 
+uniform int point_source_size;
 uniform vec3 viewPos;
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
@@ -50,9 +51,9 @@ void main()
     vec3 viewDir = normalize(viewPos - worldVert);
     
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
-
-    for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, worldVert, viewDir);       
+   
+    //for(int i = 0; i < 1; i++)
+    //    result += CalcPointLight(pointLights[i], norm, worldVert, viewDir);       
     color = vec4(result, 1.0);
 }
 
