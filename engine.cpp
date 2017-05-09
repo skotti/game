@@ -16,6 +16,7 @@ const float Engine::S_BLOCK_HEIGHT = 0.8;
 const float Engine::S_PLAYER_HEIGHT = 2.0 * Window::S_Z_NEAR;
 const float Engine::S_PLAYER_DELTA = 0.01;
 const float Engine::S_PLAYER_WIDTH = 0.2;
+const float Engine::S_TIME_STEP = 0.01;
 
 Engine::Engine() : m_exit_required(false)
 {

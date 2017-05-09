@@ -325,6 +325,16 @@ int Window::registerText(const std::string& text, Vec2f pos, float scale) {
 	return m_text.size()-1;
 }
 
+void Window::setTextString(int id, const std::string& text) {
+	ASSERT(0 <= id && id < m_text.size());
+	m_text.at(id)->m_text = text;
+}
+
+void Window::setTextPosition(int id, Vec2f pos) {
+	ASSERT(0 <= id && id < m_text.size());
+	m_text.at(id)->m_pos = pos;
+}
+
 void Window::destroyText(int id) {
 	ASSERT(0 <= id && id < m_text.size());
 	delete m_text.at(id);

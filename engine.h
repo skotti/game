@@ -33,19 +33,22 @@ public:
 		return m_exit_required;
 	}
 	
-	void update() {
-		Window::instance()->clearScreen();
-		
+	void updateInput() {
 		glfwPollEvents();
 		InputNotifier::instance()->input();
 		MouseNotifier::instance()->input();
-		
+	}
+	
+	void updateLogic() {
 		engineLogic();
 		for (auto&& obj : m_game_object) { 
 			obj->update();
 		}
 		correctPlayerPosition();
-		
+	}
+	
+	void updateGraphic() {
+		Window::instance()->clearScreen();
 		Window::instance()->draw();
 		Window::instance()->swapBuffers();
 	}
@@ -59,6 +62,7 @@ public:
 	static const float S_PLAYER_HEIGHT;
 	static const float S_PLAYER_DELTA;
 	static const float S_PLAYER_WIDTH;
+	static const float S_TIME_STEP;
 	
 private:
 	

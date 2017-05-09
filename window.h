@@ -91,6 +91,8 @@ public:
 	void destroyGameObject(int id);
 	
 	int registerText(const std::string& text, Vec2f pos, float scale);
+	void setTextString(int id, const std::string& text);
+	void setTextPosition(int id, Vec2f pos);
 	void destroyText(int id);
 	
 	static const float S_Z_NEAR;
