@@ -4,8 +4,11 @@
 #include "logger.h"
 #include "gl_headers.h"
 
-const GLuint Window::S_WIDTH = 1024;
-const GLuint Window::S_HEIGHT = 768; 
+#include <ft2build.h>
+#include FT_FREETYPE_H 
+
+const GLuint Window::S_WIDTH = 1280;
+const GLuint Window::S_HEIGHT = 960;
 
 const float Window::S_Z_NEAR = 0.1;
 const float Window::S_Z_FAR = 100; 
@@ -38,10 +41,16 @@ Window::Window() {
 	GL_CHECK(glEnable(GL_DEPTH_TEST));
 	GL_CHECK(glDepthFunc(GL_LESS));
 	
+	// to draw fonts
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 	createVisualObjects();
 	
 	createObjectShader();
 	createDepthShader();
+	createFontShader();
 	
 	// create light source
 	Vec3f light_direction = {-0.2, -1.0, -0.3};
@@ -51,6 +60,9 @@ Window::Window() {
 	int light_type = 1;
 	
 	m_light = Light(light_direction, light_ambient, light_specular, light_diffuse, light_type);
+	
+	initFonts();
+	initTextObject();
 }
 
 Window::~Window() {
@@ -71,10 +83,10 @@ int Window::registerGameObject(const std::string& window_model_name) {
 	return id;
 }
 
-void Window::destroyGameObject(int m_id)
+void Window::destroyGameObject(int id)
 {
-	ASSERT(m_view.at(m_id) != nullptr);
-	delete m_view.at(m_id);
+	ASSERT(m_view.at(id) != nullptr);
+	delete m_view.at(id);
 }
 
 void Window::createVisualObjects() {
@@ -112,8 +124,17 @@ void Window::createDepthShader() {
 	
 }
 
-void Window::draw() {
+void Window::createFontShader() {
+	m_font_shader = new ShaderProgram();
+	Shader vertex_shader("shaders/text_vertex.vert", ShaderType::VERTEX);
+	Shader fragment_shader("shaders/text_fragment.frag", ShaderType::FRAGMENT);
 	
+	m_font_shader->attach(&vertex_shader);
+	m_font_shader->attach(&fragment_shader);
+	m_font_shader->compile();
+}
+
+void Window::draw() {	
 	glm::vec3 camera_pos = toGLMvec3(getCamera().getPos());
 	glm::vec3 camera_front = toGLMvec3(getCamera().getFront());
 	glm::vec3 camera_up = toGLMvec3(getCamera().getUp());
@@ -167,4 +188,145 @@ void Window::draw() {
 		
 		GL_CHECK(glBindVertexArray(0));
 	}
+	
+	drawFonts();
+}
+
+void Window::initFonts() {	
+	FT_Library ft;
+	FT_CHECK(FT_Init_FreeType(&ft));
+
+	FT_Face face;
+	FT_CHECK(FT_New_Face(ft, "fonts/DejaVuSansMono.ttf", 0, &face));
+	
+	FT_CHECK(FT_Set_Pixel_Sizes(face, 0, 48));
+	
+	GL_CHECK(glPixelStorei(GL_UNPACK_ALIGNMENT, 1)); // use first byte of colour
+	
+	for (GLubyte c = 0; c < S_NUM_CHARS; c++)
+	{
+		FT_CHECK(FT_Load_Char(face, c, FT_LOAD_RENDER));
+
+		GLuint& texture = m_characters.at(c).m_texture_id;
+		GL_CHECK(glGenTextures(1, &texture));
+		GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture));
+		GL_CHECK(glTexImage2D(
+			GL_TEXTURE_2D, // target
+			0, // level
+			GL_RED, // internal format
+			face->glyph->bitmap.width, // width
+			face->glyph->bitmap.rows, // height
+			0, // border
+			GL_RED, // format 
+			GL_UNSIGNED_BYTE, // type 
+			face->glyph->bitmap.buffer // pixels
+		));
+
+		GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+		GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+		GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+		GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+		m_characters.at(c).m_size = glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
+		m_characters.at(c).m_bearing = glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top);
+		m_characters.at(c).m_advance = face->glyph->advance.x;
+	}
+	
+	GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
+	
+	FT_CHECK(FT_Done_Face(face));
+	FT_CHECK(FT_Done_FreeType(ft));
+}
+
+void Window::initTextObject()
+{
+	GL_CHECK(glGenVertexArrays(1, &m_text_object.m_vao));
+	GL_CHECK(glGenBuffers(1, &m_text_object.m_vbo));
+	
+	GL_CHECK(glBindVertexArray(m_text_object.m_vao));
+	GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, m_text_object.m_vbo));
+	
+	const int quad_vertices = 6;
+	const int floats_per_vertice = 4;
+	GL_CHECK(glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * quad_vertices * floats_per_vertice, NULL, GL_DYNAMIC_DRAW));
+	GL_CHECK(glEnableVertexAttribArray(0));
+	GL_CHECK(glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0));
+	
+	GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GL_CHECK(glBindVertexArray(0));
+}
+
+void Window::drawFonts()
+{
+	const int quad_vertices = 6;
+	const int floats_per_vertice = 4;
+	
+	GLint loc = 0;
+	
+	glm::mat4 projection_matrix = glm::ortho(0.0f, static_cast<GLfloat>(S_WIDTH), 0.0f, static_cast<GLfloat>(S_HEIGHT));
+	GL_CHECK(glUseProgram(m_font_shader->getShaderProgram()));
+	loc = GL_CHECK(glGetUniformLocation(m_font_shader->getShaderProgram(), "projection"));
+	GL_CHECK(glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection_matrix)));
+	
+	GL_CHECK(glUseProgram(m_font_shader->getShaderProgram()));
+	loc = GL_CHECK(glGetUniformLocation(m_font_shader->getShaderProgram(), "textColor"));
+	GL_CHECK(glUniform3f(loc, 25.0f, 25.0f, 1.0f));
+	
+	GL_CHECK(glActiveTexture(GL_TEXTURE0));
+	GL_CHECK(glBindVertexArray(m_text_object.m_vao));
+	
+	for (auto&& text : m_text) {
+		GLfloat x = text->m_pos[0] * S_WIDTH;
+		GLfloat y = text->m_pos[1] * S_HEIGHT;
+		for (auto&& c : text->m_text) {
+			CharacterTexture ct = m_characters.at(c);
+			
+			GLfloat x_pos = x + ct.m_bearing.x * text->m_scale;
+			GLfloat y_pos = y - (ct.m_size.y - ct.m_bearing.y) * text->m_scale;
+			
+			GLfloat width = ct.m_size.x * text->m_scale * S_HEIGHT;
+			GLfloat height = ct.m_size.y * text->m_scale * S_HEIGHT;
+			
+			// Update VBO for each character
+			GLfloat vertices[quad_vertices][floats_per_vertice] = {
+				{ x_pos,         y_pos + height,   0.0, 0.0 },            
+				{ x_pos,         y_pos,            0.0, 1.0 },
+				{ x_pos + width, y_pos,            1.0, 1.0 },
+				
+				{ x_pos,         y_pos + height,   0.0, 0.0 },
+				{ x_pos + width, y_pos,            1.0, 1.0 },
+				{ x_pos + width, y_pos + height,   1.0, 0.0 }           
+			};
+			
+			// Render glyph texture over quad
+			GL_CHECK(glBindTexture(GL_TEXTURE_2D, ct.m_texture_id));
+			// Update content of VBO memory
+			GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, m_text_object.m_vbo));
+			// Be sure to use glBufferSubData and not glBufferData
+			GL_CHECK(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices));
+
+			GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
+			// Render quad
+			GL_CHECK(glDrawArrays(GL_TRIANGLES, 0, quad_vertices));
+			// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+			int advance_step = 64;
+			x += (ct.m_advance / advance_step) * text->m_scale * S_HEIGHT; 
+		}
+	}
+	GL_CHECK(glBindVertexArray(0));
+	GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
+}
+
+int Window::registerText(const std::string& text, Vec2f pos, float scale) {
+	ASSERT(0.0 <= pos[0] && pos[0] <= 1.0);
+	ASSERT(0.0 <= pos[1] && pos[1] <= 1.0);
+	Text* new_text = new Text{text, pos, scale};
+	m_text.push_back(new_text);
+	return m_text.size()-1;
+}
+
+void Window::destroyText(int id) {
+	ASSERT(0 <= id && id < m_text.size());
+	delete m_text.at(id);
+	m_text.erase(m_text.begin() + id);
 }

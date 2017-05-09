@@ -1,5 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
+
+#include "stl_headers.h"
 #include "gl_headers.h"
 #include "logger.h"
 #include "debug.h"
@@ -22,6 +24,18 @@ struct VisualObject {
 	Material* m_material;
 };
 
+struct Text {
+	std::string m_text;
+	Vec2f m_pos;
+	float m_scale;
+};
+
+struct CharacterTexture {
+	GLuint m_texture_id;
+	glm::ivec2 m_size;
+	glm::ivec2 m_bearing;
+	GLuint m_advance;
+};
 
 struct View {
 	
@@ -74,16 +88,25 @@ public:
 	void draw();
 
 	int registerGameObject(const std::string& window_model_name);
-	void destroyGameObject(int m_id);
+	void destroyGameObject(int id);
+	
+	int registerText(const std::string& text, Vec2f pos, float scale);
+	void destroyText(int id);
 	
 	static const float S_Z_NEAR;
 	
 private:
 	
+	void initFonts();
+	void initTextObject();
+	
 	void createObjectShader();
 	void createDepthShader();
+	void createFontShader();
 	
 	void createVisualObjects();
+	
+	void drawFonts();
 	
 	GLFWwindow* m_window;
 	Logger m_logger;
@@ -93,6 +116,15 @@ private:
 	static std::map<std::string, VisualObject> S_VISUAL_OBJECT;
 	
 	std::vector<View*> m_view;
+	
+	static const int S_NUM_CHARS = 128;
+	std::array<CharacterTexture, S_NUM_CHARS> m_characters;
+	
+	std::vector<Text*> m_text;
+	
+	struct TextObject {
+		GLuint m_vao = 0, m_vbo = 0;
+	} m_text_object;
 
 	static const float S_Z_FAR;
 	static const float S_FOV_Y;
@@ -102,6 +134,7 @@ private:
 	Light m_light;
 	ShaderProgram* m_object_shader = nullptr;
 	ShaderProgram* m_depth_shader = nullptr;
+	ShaderProgram* m_font_shader = nullptr;
 };
 
 #endif

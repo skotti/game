@@ -32,9 +32,12 @@ configure_file(shaders/material_fragment.frag shaders/material_fragment.frag COP
 configure_file(shaders/material_vertex.vert shaders/material_vertex.vert COPYONLY)
 configure_file(shaders/texture_fragment.frag shaders/texture_fragment.frag COPYONLY)
 configure_file(shaders/texture_vertex.vert shaders/texture_vertex.vert COPYONLY)
+configure_file(shaders/text_fragment.frag shaders/text_fragment.frag COPYONLY)
+configure_file(shaders/text_vertex.vert shaders/text_vertex.vert COPYONLY)
+
+configure_file(fonts/DejaVuSansMono.ttf fonts/DejaVuSansMono.ttf COPYONLY)
 
 configure_file(models/modelCube.obj models/modelCube.obj COPYONLY)
-configure_file(models/suzanna.obj models/suzanna.obj COPYONLY)
 
 find_package(OpenGL REQUIRED)
 
@@ -65,3 +68,8 @@ find_package(assimp REQUIRED)
 
 target_include_directories(cube_game PUBLIC ${assimp_INCLUDE_DIR})
 target_link_libraries(cube_game PUBLIC ${assimp_LIBRARIES})
+
+find_package(Freetype REQUIRED)
+
+target_include_directories(cube_game PUBLIC ${FREETYPE_INCLUDE_DIRS})
+target_link_libraries(cube_game PUBLIC ${FREETYPE_LIBRARIES})

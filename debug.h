@@ -31,4 +31,6 @@ void vassert(
 	param;\
 	VASSERT((glGetError() == GL_NO_ERROR), "OpenGl internal error occured");
 
+#define FT_CHECK(param) VASSERT(!param, "Freetype error occured")
+	
 #endif
