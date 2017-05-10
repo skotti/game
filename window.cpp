@@ -3,6 +3,7 @@
 
 #include "logger.h"
 #include "gl_headers.h"
+#include "stl_headers.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H 
@@ -229,6 +230,7 @@ void Window::initFonts() {
 
 		m_characters.at(c).m_size = glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows);
 		m_characters.at(c).m_bearing = glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top);
+		Logger::instance()->log("BITMAP: % % % %", (char)c, face->glyph->bitmap_top, face->glyph->bitmap.rows, (int)face->glyph->bitmap.rows-(int)face->glyph->bitmap_top);
 		m_characters.at(c).m_advance = face->glyph->advance.x;
 	}
 	
@@ -279,10 +281,10 @@ void Window::drawFonts()
 		GLfloat x = text->m_pos[0] * S_WIDTH;
 		GLfloat y = text->m_pos[1] * S_HEIGHT;
 		for (auto&& c : text->m_text) {
-			CharacterTexture ct = m_characters.at(c);
+			CharacterTexture& ct = m_characters.at(c);
 			
-			GLfloat x_pos = x + ct.m_bearing.x * text->m_scale;
-			GLfloat y_pos = y - (ct.m_size.y - ct.m_bearing.y) * text->m_scale;
+			GLfloat x_pos = x + ct.m_bearing.x * text->m_scale * S_HEIGHT;
+			GLfloat y_pos = y - (ct.m_size.y - ct.m_bearing.y) * text->m_scale * S_HEIGHT;
 			
 			GLfloat width = ct.m_size.x * text->m_scale * S_HEIGHT;
 			GLfloat height = ct.m_size.y * text->m_scale * S_HEIGHT;
@@ -317,26 +319,23 @@ void Window::drawFonts()
 	GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
-int Window::registerText(const std::string& text, Vec2f pos, float scale) {
+Window::TextId Window::registerText(const std::string& text, Vec2f pos, float scale) {
 	ASSERT(0.0 <= pos[0] && pos[0] <= 1.0);
 	ASSERT(0.0 <= pos[1] && pos[1] <= 1.0);
 	Text* new_text = new Text{text, pos, scale};
 	m_text.push_back(new_text);
-	return m_text.size()-1;
+	return new_text;
 }
 
-void Window::setTextString(int id, const std::string& text) {
-	ASSERT(0 <= id && id < m_text.size());
-	m_text.at(id)->m_text = text;
+void Window::setTextString(Window::TextId id, const std::string& text) {
+	id->m_text = text;
 }
 
-void Window::setTextPosition(int id, Vec2f pos) {
-	ASSERT(0 <= id && id < m_text.size());
-	m_text.at(id)->m_pos = pos;
+void Window::setTextPosition(Window::TextId id, Vec2f pos) {
+	id->m_pos = pos;
 }
 
-void Window::destroyText(int id) {
-	ASSERT(0 <= id && id < m_text.size());
-	delete m_text.at(id);
-	m_text.erase(m_text.begin() + id);
+void Window::destroyText(Window::TextId id) {
+	delete id;
+	m_text.erase(std::find(m_text.begin(), m_text.end(), id));
 }

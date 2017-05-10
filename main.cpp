@@ -16,7 +16,9 @@ int main(int argc, char **argv) {
 	double previous_second = clock.getTime();
 	double lag = 0.0;
 	
-	int fps_id = Window::instance()->registerText("FPS: 0", Vec2f{0.01f, 0.9f}, 0.001f);
+	Window::TextId fps_id = Window::instance()->registerText("FPS: 0", Vec2f{0.01f, 0.9f}, 0.001f);
+	
+	
 	
 	while (!engine->isExitRequired())
 	{
@@ -42,6 +44,9 @@ int main(int argc, char **argv) {
 	}
 	
 	Window::instance()->destroyText(fps_id);
+	
+	Window::instance()->destroyText(id);
+	Window::instance()->destroyText(id2);
 	
 	Engine::destroy();
 	

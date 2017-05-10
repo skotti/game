@@ -57,37 +57,48 @@ void PlayerLogic::onEvent(InputEvent event)
 	MazeGenerator& mg = Engine::instance()->getMazeGenerator();
 	MazeNode& cur_mn = mg.node(ind_i, ind_j);
 	
-	if (event == InputEvent::FORWARD) {
-		m_player_pos = m_player_pos + S_SHIFT_SPEED * glm::normalize(glm::vec3(m_player_front[0], 0, m_player_front[2]));
+	if (event == InputEvent::MENU) {
+		m_disable = !m_disable;
 	}
-	if (event == InputEvent::BACKWARD) {
-		m_player_pos = m_player_pos - S_SHIFT_SPEED * glm::normalize(glm::vec3(m_player_front[0], 0, m_player_front[2]));
-	}
-	if (event == InputEvent::SHIFT_LEFT) {
-		m_player_pos = m_player_pos - glm::normalize(glm::cross(m_player_front, m_player_up)) * S_SHIFT_SPEED;
-	}
-	if (event == InputEvent::SHIFT_RIGHT) {
-		m_player_pos = m_player_pos + glm::normalize(glm::cross(m_player_front, m_player_up)) * S_SHIFT_SPEED;
-	}
-	
-	if (m_player_pos[0] > border_pos_plus[0] && !cur_mn.dir(MazeDir::RIGHT)) {
-		m_player_pos[0] = border_pos_plus[0];
-	}
-	if (m_player_pos[0] < border_pos_minus[0] && !cur_mn.dir(MazeDir::LEFT)) {
-		m_player_pos[0] = border_pos_minus[0];
-	}
-	if (m_player_pos[2] > border_pos_plus[2] && !cur_mn.dir(MazeDir::UP)) {
-		m_player_pos[2] = border_pos_plus[2];
-	}
-	if (m_player_pos[2] < border_pos_minus[2] && !cur_mn.dir(MazeDir::DOWN)) {
-		m_player_pos[2] = border_pos_minus[2];
-	}
-	
-	if (event == InputEvent::ROTATE_LEFT) {
-		rotate(-S_ROTATE_SPEED, 0);
-	}
-	if (event == InputEvent::ROTATE_RIGHT) {
-		rotate(S_ROTATE_SPEED, 0);
+	if (!m_disable) {
+		if (event == InputEvent::FORWARD) {
+			m_player_pos = m_player_pos + S_SHIFT_SPEED * glm::normalize(glm::vec3(m_player_front[0], 0, m_player_front[2]));
+		}
+		if (event == InputEvent::BACKWARD) {
+			m_player_pos = m_player_pos - S_SHIFT_SPEED * glm::normalize(glm::vec3(m_player_front[0], 0, m_player_front[2]));
+		}
+		if (event == InputEvent::SHIFT_LEFT) {
+			m_player_pos = m_player_pos - glm::normalize(glm::cross(m_player_front, m_player_up)) * S_SHIFT_SPEED;
+		}
+		if (event == InputEvent::SHIFT_RIGHT) {
+			m_player_pos = m_player_pos + glm::normalize(glm::cross(m_player_front, m_player_up)) * S_SHIFT_SPEED;
+		}
+		
+		if (m_player_pos[0] > border_pos_plus[0] && !cur_mn.dir(MazeDir::RIGHT)) {
+			m_player_pos[0] = border_pos_plus[0];
+		}
+		if (m_player_pos[0] < border_pos_minus[0] && !cur_mn.dir(MazeDir::LEFT)) {
+			m_player_pos[0] = border_pos_minus[0];
+		}
+		if (m_player_pos[2] > border_pos_plus[2] && !cur_mn.dir(MazeDir::UP)) {
+			m_player_pos[2] = border_pos_plus[2];
+		}
+		if (m_player_pos[2] < border_pos_minus[2] && !cur_mn.dir(MazeDir::DOWN)) {
+			m_player_pos[2] = border_pos_minus[2];
+		}
+		
+		if (event == InputEvent::ROTATE_LEFT) {
+			rotate(-S_ROTATE_SPEED, 0);
+		}
+		if (event == InputEvent::ROTATE_RIGHT) {
+			rotate(S_ROTATE_SPEED, 0);
+		}
+		if (event == InputEvent::UP) {
+			rotate(0, S_ROTATE_SPEED);
+		}
+		if (event == InputEvent::DOWN) {
+			rotate(0, -S_ROTATE_SPEED);
+		}
 	}
 	
 	m_game_object->setPos(toVec3f(m_player_pos));
@@ -97,6 +108,7 @@ void PlayerLogic::onEvent(InputEvent event)
 
 void PlayerLogic::onEvent(MouseEvent event)
 {
+	
 	if(m_first_mouse)
 	{
 		m_last_x = event.xpos;//lastX - last X MOUSE position
@@ -109,6 +121,8 @@ void PlayerLogic::onEvent(MouseEvent event)
 	m_last_x = event.xpos;//set new last X position
 	m_last_y = event.ypos;//set new last Y position
 
+	if (m_disable) return;
+	
 	float sensitivity = 0.05;
 	xoffset *= sensitivity;//minor offset
 	yoffset *= sensitivity;//minor offset
@@ -120,7 +134,7 @@ void PlayerLogic::onEvent(MouseEvent event)
 		m_pitch = 89.0f;
 	if(m_pitch < -89.0f)
 		m_pitch = -89.0f;
-
+	
 	glm::vec3 front(
 		cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)),
 		sin(glm::radians(m_pitch)),

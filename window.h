@@ -90,10 +90,11 @@ public:
 	int registerGameObject(const std::string& window_model_name);
 	void destroyGameObject(int id);
 	
-	int registerText(const std::string& text, Vec2f pos, float scale);
-	void setTextString(int id, const std::string& text);
-	void setTextPosition(int id, Vec2f pos);
-	void destroyText(int id);
+	typedef Text* TextId;
+	TextId registerText(const std::string& text, Vec2f pos, float scale);
+	void setTextString(TextId id, const std::string& text);
+	void setTextPosition(TextId id, Vec2f pos);
+	void destroyText(TextId id);
 	
 	static const float S_Z_NEAR;
 	
@@ -122,7 +123,7 @@ private:
 	static const int S_NUM_CHARS = 128;
 	std::array<CharacterTexture, S_NUM_CHARS> m_characters;
 	
-	std::vector<Text*> m_text;
+	std::list<Text*> m_text;
 	
 	struct TextObject {
 		GLuint m_vao = 0, m_vbo = 0;

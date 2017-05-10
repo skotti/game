@@ -10,6 +10,9 @@ enum class InputEvent {
 	DOWN,
 	ROTATE_LEFT,
 	ROTATE_RIGHT,
+	
+	MENU,
+	
 	EXIT
 };
 

@@ -27,6 +27,14 @@ public:
 		if (event == InputEvent::EXIT) {
 			m_exit_required = true;
 		}
+		if (event == InputEvent::MENU) {
+			m_menu_mode = !m_menu_mode;
+			if (m_menu_mode) {
+				glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			} else {
+				glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			}
+		}
 	}
 	
 	bool isExitRequired() const {
@@ -89,6 +97,7 @@ private:
 	
 	GameObject* m_player_object = nullptr;
 	
+	bool m_menu_mode = false;
 };
 
 #endif

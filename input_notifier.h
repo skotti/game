@@ -19,6 +19,8 @@ public:
 	
 private:
 	bool isKeySet(int key) const;
+	bool isPressed(int key) const;
+	bool isReleased(int key) const;
 };
 
 #endif
