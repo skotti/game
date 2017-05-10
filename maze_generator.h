@@ -153,8 +153,6 @@ private:
 	int m_last_pos_x = 0, m_last_pos_y = 0;
 	
 	std::vector<float> m_heights;
-	
-	std::mt19937_64 m_rand;
 };
 
 #endif

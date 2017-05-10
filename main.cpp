@@ -18,8 +18,6 @@ int main(int argc, char **argv) {
 	
 	Window::TextId fps_id = Window::instance()->registerText("FPS: 0", Vec2f{0.01f, 0.9f}, 0.001f);
 	
-	
-	
 	while (!engine->isExitRequired())
 	{
 		current = clock.getTime();
@@ -42,11 +40,8 @@ int main(int argc, char **argv) {
 		
 		engine->updateGraphic();
 	}
-	
+		
 	Window::instance()->destroyText(fps_id);
-	
-	Window::instance()->destroyText(id);
-	Window::instance()->destroyText(id2);
 	
 	Engine::destroy();
 	

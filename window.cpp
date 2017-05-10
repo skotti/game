@@ -88,6 +88,7 @@ void Window::destroyGameObject(int id)
 {
 	ASSERT(m_view.at(id) != nullptr);
 	delete m_view.at(id);
+	m_view.at(id) = nullptr;
 }
 
 void Window::createVisualObjects() {
@@ -270,14 +271,17 @@ void Window::drawFonts()
 	loc = GL_CHECK(glGetUniformLocation(m_font_shader->getShaderProgram(), "projection"));
 	GL_CHECK(glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection_matrix)));
 	
-	GL_CHECK(glUseProgram(m_font_shader->getShaderProgram()));
-	loc = GL_CHECK(glGetUniformLocation(m_font_shader->getShaderProgram(), "textColor"));
-	GL_CHECK(glUniform3f(loc, 25.0f, 25.0f, 1.0f));
-	
 	GL_CHECK(glActiveTexture(GL_TEXTURE0));
 	GL_CHECK(glBindVertexArray(m_text_object.m_vao));
 	
 	for (auto&& text : m_text) {
+		if (text->m_hidden) continue;
+		
+		// set color
+		GL_CHECK(glUseProgram(m_font_shader->getShaderProgram()));
+		loc = GL_CHECK(glGetUniformLocation(m_font_shader->getShaderProgram(), "textColor"));
+		GL_CHECK(glUniform3f(loc, text->m_color[0], text->m_color[1], text->m_color[2]));
+		
 		GLfloat x = text->m_pos[0] * S_WIDTH;
 		GLfloat y = text->m_pos[1] * S_HEIGHT;
 		for (auto&& c : text->m_text) {
@@ -322,9 +326,41 @@ void Window::drawFonts()
 Window::TextId Window::registerText(const std::string& text, Vec2f pos, float scale) {
 	ASSERT(0.0 <= pos[0] && pos[0] <= 1.0);
 	ASSERT(0.0 <= pos[1] && pos[1] <= 1.0);
-	Text* new_text = new Text{text, pos, scale};
+	Text* new_text = new Text{Vec3f{1.0f, 1.0f, 1.0f}, text, pos, scale, false};
 	m_text.push_back(new_text);
 	return new_text;
+}
+
+void Window::hideText(Window::TextId id) {
+	id->m_hidden = true;
+}
+
+void Window::showText(Window::TextId id) {
+	id->m_hidden = false;
+}
+
+bool Window::isInsideText(TextId id, Vec2f pos) {
+	return 
+		id->m_pos[0] <= pos[0] && pos[0] < id->m_pos[0] + textSize(id)[0] &&
+		id->m_pos[1] <= pos[1] && pos[1] < id->m_pos[1] + textSize(id)[1];
+}
+
+Vec2f Window::textSize(TextId id) {
+	int advance_step = 64;
+	
+	float width = 0;
+	float height = 0;
+	
+	for (auto&& c : id->m_text) {
+		CharacterTexture& ct = m_characters.at(c);
+		width += (ct.m_advance / advance_step) * id->m_scale * S_HEIGHT / S_WIDTH;
+		height = std::max(height, ct.m_bearing.y * id->m_scale);
+	}
+	return Vec2f{width, height};
+}
+
+void Window::setTextColor(TextId id, Vec3f color) {
+	id->m_color = color;
 }
 
 void Window::setTextString(Window::TextId id, const std::string& text) {

@@ -25,9 +25,11 @@ struct VisualObject {
 };
 
 struct Text {
+	Vec3f m_color;
 	std::string m_text;
 	Vec2f m_pos;
 	float m_scale;
+	bool m_hidden;
 };
 
 struct CharacterTexture {
@@ -92,11 +94,18 @@ public:
 	
 	typedef Text* TextId;
 	TextId registerText(const std::string& text, Vec2f pos, float scale);
+	void hideText(TextId id);
+	void showText(TextId id);
+	bool isInsideText(TextId id, Vec2f pos);
+	Vec2f textSize(TextId id);
+	void setTextColor(TextId id, Vec3f color);
 	void setTextString(TextId id, const std::string& text);
 	void setTextPosition(TextId id, Vec2f pos);
 	void destroyText(TextId id);
 	
 	static const float S_Z_NEAR;
+	
+	static const GLuint S_WIDTH, S_HEIGHT; 
 	
 private:
 	
@@ -131,8 +140,6 @@ private:
 
 	static const float S_Z_FAR;
 	static const float S_FOV_Y;
-	
-	static const GLuint S_WIDTH, S_HEIGHT; 
 	
 	Light m_light;
 	ShaderProgram* m_object_shader = nullptr;

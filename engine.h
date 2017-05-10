@@ -15,8 +15,10 @@
 #include "player_logic.h"
 #include "window.h"
 #include "singleton.h"
+#include "menu.h"
+#include "random.h"
 
-class Engine : public Listener<InputEvent>, public Singleton<Engine> {
+class Engine : public Listener<InputEvent>, public Singleton<Engine>, public Listener<MenuEvent> {
 
 public:
 	
@@ -24,16 +26,24 @@ public:
 	
 	virtual void onEvent(InputEvent event) {
 		Logger::instance()->log("Engine process event");
-		if (event == InputEvent::EXIT) {
-			m_exit_required = true;
-		}
 		if (event == InputEvent::MENU) {
 			m_menu_mode = !m_menu_mode;
 			if (m_menu_mode) {
 				glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+				m_menu.enable();
 			} else {
 				glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+				m_menu.disable();
 			}
+		}
+	}
+	
+	virtual void onEvent(MenuEvent event) {
+		if (event.m_entry_num == 0) {
+			m_new_game = true;
+		}
+		if (event.m_entry_num == 1) {
+			m_exit_required = true;
 		}
 	}
 	
@@ -48,6 +58,11 @@ public:
 	}
 	
 	void updateLogic() {
+		if (m_new_game) {
+			startNewGame(Random::getInt(1, 20), Random::getInt(1, 20));
+			m_new_game = false;
+		}
+		
 		engineLogic();
 		for (auto&& obj : m_game_object) { 
 			obj->update();
@@ -74,12 +89,18 @@ public:
 	
 private:
 	
+	void startNewGame(int size_x, int size_y) {
+		initializeMaze(size_x, size_y);
+	}
+	
 	void registerGameObject(GameObject* game_object) {
 		Logger::instance()->log("Register game object");
 		m_game_object.push_back(game_object);
 	}
 	
-	void initializeMaze();
+	void initializeMaze(int size_x, int size_y);
+	
+	void initializeMenu();
 	
 	void engineLogic();
 	void correctPlayerPosition();
@@ -97,6 +118,9 @@ private:
 	
 	GameObject* m_player_object = nullptr;
 	
+	Menu m_menu;
+	
+	bool m_new_game = true;
 	bool m_menu_mode = false;
 };
 

@@ -20,6 +20,8 @@ add_executable(cube_game
 	game_object.cpp
 	game_graphic.cpp
 	utils.cpp
+	menu.cpp
+	random.cpp
 	)
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)

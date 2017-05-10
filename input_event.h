@@ -6,10 +6,13 @@ enum class InputEvent {
 	BACKWARD,
 	SHIFT_LEFT,
 	SHIFT_RIGHT,
+	
 	UP,
 	DOWN,
 	ROTATE_LEFT,
 	ROTATE_RIGHT,
+	
+	MOUSE_LEFT,
 	
 	MENU,
 	

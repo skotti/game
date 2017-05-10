@@ -33,6 +33,12 @@ public:
 		m_id = Window::instance()->registerGameObject(window_model_name);
 	}
 	
+	virtual ~ModelGraphic() {
+		if (m_id != -1) {
+			Window::instance()->destroyGameObject(m_id);
+		}
+	}
+	
 	void update();
 	
 };

@@ -6,6 +6,8 @@
 #include <random>
 #include <algorithm>
 
+#include "random.h"
+
 MazeDir opposite(MazeDir dir) {
 	switch (dir) {
 		case MazeDir::UP: return MazeDir::DOWN;
@@ -23,6 +25,7 @@ void MazeGenerator::generate(int len_x, int len_y, int start_x, int start_y) {
 	m_start_x = start_x;
 	m_start_y = start_y;
 	
+	m_nodes.clear();
 	m_nodes.resize(m_len_x * m_len_y);
 	
 	// create classic dfs maze
@@ -68,8 +71,7 @@ void MazeGenerator::classicDFS() {
 		}
 
 		if (next.size() > 0) {
-			std::uniform_int_distribution<> dis(0, next.size()-1);
-			MazeDir direction = next.at(dis(m_rand));
+			MazeDir direction = next.at(Random::getInt(0, next.size()-1));
 			MazeIndex next_node = cur.neigh(direction);
 			node(cur).dir(direction) = true;
 			node(next_node).order() = node(cur).order() + 1;
@@ -295,8 +297,7 @@ void MazeGenerator::closeFalceCycles()
 					}
 
 					if (next.size() > 0) {
-						std::uniform_int_distribution<> dis(0, next.size()-1);
-						MazeDir direction = next.at(dis(m_rand));
+						MazeDir direction = next.at(Random::getInt(0, next.size()-1));
 						MazeIndex next_node = cur.neigh(direction);
 						node(cur).dir(direction) = true;
 						dfs_stack.push(next_node);
@@ -317,29 +318,30 @@ void MazeGenerator::genHeights(int x, int y)
 	
 	MazeIndex cur(x, y);
 	
-	float min_height = 1.0;
-	float max_height = 5.0;
+	float min_height = 0.1;
+	float max_height = 0.9;
 	
-	auto dis_any = std::uniform_real_distribution<float>(min_height, max_height);
 	for (int i = 0; i < m_len_x; ++i) {
 		for (int j = 0; j < m_len_y; ++j) {
-			height(i, j) = dis_any(m_rand);
+			height(i, j) = Random::getFloat(min_height, max_height);
 		}
 	}
 	
 	//generate random height for current node
-	auto dis_middle = std::uniform_real_distribution<float>(min_height+1, max_height-1);
-	height(cur) = dis_middle(m_rand);
-	auto dis_less = std::uniform_real_distribution<float>(min_height, height(cur));
-	auto dis_more = std::uniform_real_distribution<float>(height(cur), max_height);
-	
+	height(cur) = Random::getFloat(min_height+0.2, max_height-0.2);
+
 	for (int dir = 0; dir != static_cast<int>(MazeDir::ALL); ++dir) {
 		MazeDir neigh_dir = static_cast<MazeDir>(dir);
 		if (inside(cur.neigh(neigh_dir))) {
 			bool path_exists = node(cur).dir(neigh_dir);
-			std::uniform_real_distribution<float> dis;
-			dis = path_exists ? dis_less : dis_more;
-			height(cur.neigh(neigh_dir)) = dis(m_rand);
+			float min = min_height;
+			float max = max_height;
+			if (path_exists) {
+				max = height(cur) - 0.1;
+			} else {
+				min = height(cur) + 0.1;
+			}
+			height(cur.neigh(neigh_dir)) = Random::getFloat(min, max);
 		}
 	}
 
