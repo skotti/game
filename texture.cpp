@@ -3,7 +3,7 @@
 
 Texture::Texture(const std::string& file_name)
 {
-	//GL_CHECK(glEnable(GL_TEXTURE_2D));
+	GL_CHECK(glEnable(GL_TEXTURE_2D));
 
 	GL_CHECK(glGenTextures(1, &m_texture_id));
 	GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_texture_id));

@@ -50,10 +50,10 @@ Engine::~Engine()
 void Engine::initializeMaze() {
 	Logger::instance()->log("initializeMaze");
 	
-	int size_x = 10;
-	int size_y = 20;
-	int start_x = 5;
-	int start_y = 2;
+	int size_x = 5;
+	int size_y = 5;
+	int start_x = 0;
+	int start_y = 0;
 	m_generator.generate(size_x, size_y, start_x, start_y);
 	m_maze_components.resize(size_x * size_y);
 	

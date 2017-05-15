@@ -13,6 +13,11 @@
 #include "shader.h"
 #include "shader_program.h"
 #include "lights.h"
+#include "shadow.h"
+#include "skybox.h"
+#include <al.h>
+#include <alc.h>
+#include <alut.h>
 
 class GameObject;
 
@@ -77,11 +82,21 @@ public:
 	void destroyGameObject(int m_id);
 	
 	static const float S_Z_NEAR;
+	static const float S_Z_FAR;
+	static const float S_FOV_Y;
+	
+	static const GLuint S_WIDTH, S_HEIGHT; 
+	static const GLuint S_SHADOW_WIDTH;
+	static const GLuint S_SHADOW_HEIGHT;
 	
 private:
 	
+	void renderScene(VisualObject* vo, View* view, GLuint program);
 	void createObjectShader();
 	void createDepthShader();
+	void createShadowShader();
+	void createSkyBoxShader();
+	void createInterShader();
 	
 	void createVisualObjects();
 	
@@ -93,15 +108,16 @@ private:
 	static std::map<std::string, VisualObject> S_VISUAL_OBJECT;
 	
 	std::vector<View*> m_view;
-
-	static const float S_Z_FAR;
-	static const float S_FOV_Y;
 	
-	static const GLuint S_WIDTH, S_HEIGHT; 
-	
-	Light m_light;
+// 	Light m_light;
+	Shadow* m_shadow;
 	ShaderProgram* m_object_shader = nullptr;
 	ShaderProgram* m_depth_shader = nullptr;
+	ShaderProgram* m_skybox_shader = nullptr;
+	ShaderProgram* m_inter_shader = nullptr;
+	ShaderProgram* m_shadow_shader = nullptr;
+	SkyBox* m_skybox;
+	
 };
 
 #endif
