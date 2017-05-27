@@ -76,22 +76,8 @@ find_package(SOIL REQUIRED)
 target_include_directories(cube_game PUBLIC ${SOIL_INCLUDE_DIR})
 target_link_libraries(cube_game PUBLIC ${SOIL_LIBRARIES})
 
-find_package(Yaml REQUIRED)
-
-target_include_directories(cube_game PUBLIC ${YAML_INCLUDE_DIR})
-target_link_libraries(cube_game PUBLIC ${YAML_LIBRARIES})
-
 find_package(assimp REQUIRED)
 
 target_include_directories(cube_game PUBLIC ${assimp_INCLUDE_DIR})
 target_link_libraries(cube_game PUBLIC ${assimp_LIBRARIES})
 
-find_package(OpenAL REQUIRED)
-
-target_include_directories(cube_game PUBLIC ${OPENAL_INCLUDE_DIR})
-target_link_libraries(cube_game PUBLIC ${OPENAL_LIBRARIES})
-
-find_package(ALUT REQUIRED)
-
-target_include_directories(cube_game PUBLIC ${ALUT_INCLUDE_DIR})
-target_link_libraries(cube_game PUBLIC ${ALUT_LIBRARIES})

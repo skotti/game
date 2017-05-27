@@ -15,9 +15,6 @@
 #include "lights.h"
 #include "shadow.h"
 #include "skybox.h"
-#include <al.h>
-#include <alc.h>
-#include <alut.h>
 
 class GameObject;
 
