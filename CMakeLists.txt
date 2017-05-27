@@ -22,6 +22,8 @@ add_executable(cube_game
 	utils.cpp
 	menu.cpp
 	random.cpp
+	shadow.cpp
+	skybox.cpp
 	)
 
 target_compile_options(cube_game PUBLIC -g -std=c++14)
@@ -34,10 +36,29 @@ configure_file(shaders/material_fragment.frag shaders/material_fragment.frag COP
 configure_file(shaders/material_vertex.vert shaders/material_vertex.vert COPYONLY)
 configure_file(shaders/texture_fragment.frag shaders/texture_fragment.frag COPYONLY)
 configure_file(shaders/texture_vertex.vert shaders/texture_vertex.vert COPYONLY)
+
 configure_file(shaders/text_fragment.frag shaders/text_fragment.frag COPYONLY)
 configure_file(shaders/text_vertex.vert shaders/text_vertex.vert COPYONLY)
 
 configure_file(fonts/DejaVuSansMono.ttf fonts/DejaVuSansMono.ttf COPYONLY)
+
+configure_file(shaders/skybox_fragment.frag shaders/skybox_fragment.frag COPYONLY)
+configure_file(shaders/skybox_vertex.vert shaders/skybox_vertex.vert COPYONLY)
+
+configure_file(shaders/test_depth.frag shaders/test_depth.frag COPYONLY)
+configure_file(shaders/test_depth.vert shaders/test_depth.vert COPYONLY)
+
+configure_file(shaders/cascade_depth.frag shaders/cascade_depth.frag COPYONLY)
+configure_file(shaders/cascade_depth.vert shaders/cascade_depth.vert COPYONLY)
+configure_file(shaders/cascade_shadow.frag shaders/cascade_shadow.frag COPYONLY)
+configure_file(shaders/cascade_shadow.vert shaders/cascade_shadow.vert COPYONLY)
+
+configure_file(textures/right.jpg textures/right.jpg COPYONLY)
+configure_file(textures/left.jpg textures/left.jpg COPYONLY)
+configure_file(textures/top.jpg textures/top.jpg COPYONLY)
+configure_file(textures/bottom.jpg textures/bottom.jpg COPYONLY)
+configure_file(textures/back.jpg textures/back.jpg COPYONLY)
+configure_file(textures/front.jpg textures/front.jpg COPYONLY)
 
 configure_file(models/modelCube.obj models/modelCube.obj COPYONLY)
 
@@ -60,11 +81,6 @@ find_package(SOIL REQUIRED)
 
 target_include_directories(cube_game PUBLIC ${SOIL_INCLUDE_DIR})
 target_link_libraries(cube_game PUBLIC ${SOIL_LIBRARIES})
-
-find_package(Yaml REQUIRED)
-
-target_include_directories(cube_game PUBLIC ${YAML_INCLUDE_DIR})
-target_link_libraries(cube_game PUBLIC ${YAML_LIBRARIES})
 
 find_package(assimp REQUIRED)
 

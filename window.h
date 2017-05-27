@@ -15,6 +15,8 @@
 #include "shader.h"
 #include "shader_program.h"
 #include "lights.h"
+#include "shadow.h"
+#include "skybox.h"
 
 class GameObject;
 
@@ -104,17 +106,25 @@ public:
 	void destroyText(TextId id);
 	
 	static const float S_Z_NEAR;
+	static const float S_Z_FAR;
+	static const float S_FOV_Y;
 	
 	static const GLuint S_WIDTH, S_HEIGHT; 
+	static const GLuint S_SHADOW_WIDTH;
+	static const GLuint S_SHADOW_HEIGHT;
 	
 private:
 	
 	void initFonts();
 	void initTextObject();
 	
+	void renderScene(VisualObject* vo, View* view, GLuint program);
 	void createObjectShader();
 	void createDepthShader();
 	void createFontShader();
+	void createShadowShader();
+	void createSkyBoxShader();
+	void createInterShader();
 	
 	void createVisualObjects();
 	
@@ -138,13 +148,16 @@ private:
 		GLuint m_vao = 0, m_vbo = 0;
 	} m_text_object;
 
-	static const float S_Z_FAR;
-	static const float S_FOV_Y;
-	
-	Light m_light;
+// 	Light m_light;
+	Shadow* m_shadow;
 	ShaderProgram* m_object_shader = nullptr;
 	ShaderProgram* m_depth_shader = nullptr;
 	ShaderProgram* m_font_shader = nullptr;
+	ShaderProgram* m_skybox_shader = nullptr;
+	ShaderProgram* m_inter_shader = nullptr;
+	ShaderProgram* m_shadow_shader = nullptr;
+	SkyBox* m_skybox;
+	
 };
 
 #endif

@@ -66,6 +66,7 @@ void Engine::initializeMaze(int size_x, int size_y) {
 	
 	int start_x = Random::getInt(0, size_x-1);
 	int start_y = Random::getInt(0, size_y-1);
+
 	m_generator.generate(size_x, size_y, start_x, start_y);
 	m_maze_components.resize(size_x * size_y);
 	
