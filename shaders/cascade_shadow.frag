@@ -71,10 +71,10 @@ void main()
 	//vec3 light_color = 1.2*vec3(0.1745, 0.01175, 0.01175);
 	// Ambient
 	vec3 ambient = vec3(0.1745, 0.01175, 0.01175);
-	ambient = vec3(0.1, 0.1, 0.1);
+	//ambient = vec3(0.1, 0.1, 0.1);
 	// Diffuse
 	vec3 rev_dir_light = normalize(light_pos - vs_in.model_pos);
-	float diffuse_coeff = max(dot(rev_dir_light, normal), 0.0);
+	float diffuse_coeff = max(dot(rev_dir_light, normal), 0.1); // 0.1 is reflecting light
 	vec3 diffuse = diffuse_coeff * vec3(0.61424, 0.04136, 0.04136);
 	// Specular
 	float spec_coeff = 0.0;
@@ -105,21 +105,25 @@ void main()
 		shadow = 0.0;
 	}
 	
-	for(int i = 4; i < 8; i++) {
-		vec3 lc = l_coord.xyz / l_coord.w;//vec3(l_coord.xy / l_coord.w, 0.0);
-		vec3 pe = points_edge[i].xyz / points_edge[i].w;//vec3(points_edge[i].xy / points_edge[i].w, 0.0);
-		if(distance(lc, pe) < 0.1)
-			ambient = vec3(0.0, 1.0, 1.0);
-	}
-	for(int i = 0; i < 4; i++) {
-		vec3 lc = vec3(l_coord.xy / l_coord.w, 0.0);
-		vec3 pe = vec3(points_edge[i].xy / points_edge[i].w, 0.0);
-		if(distance(lc, pe) < 0.05)
-			ambient = vec3(1.0, 1.0, 1.0);
-	}
+// 	for(int i = 4; i < 8; i++) {
+// 		vec3 lc = l_coord.xyz / l_coord.w;//vec3(l_coord.xy / l_coord.w, 0.0);
+// 		vec3 pe = points_edge[i].xyz / points_edge[i].w;//vec3(points_edge[i].xy / points_edge[i].w, 0.0);
+// 		if(distance(lc, pe) < 0.1)
+// 			ambient = vec3(0.0, 1.0, 1.0);
+// 	}
+// 	for(int i = 0; i < 4; i++) {
+// 		vec3 lc = vec3(l_coord.xy / l_coord.w, 0.0);
+// 		vec3 pe = vec3(points_edge[i].xy / points_edge[i].w, 0.0);
+// 		if(distance(lc, pe) < 0.05)
+// 			ambient = vec3(1.0, 1.0, 1.0);
+// 	}
 	
-	shadow = min(shadow, 0.65);
-	frag_color = vec4(ambient + (1.0 - shadow)*(specular + diffuse), 1.0);	
+	float shadow_max = 0.65;
+	if (shadow > shadow_max) {
+		frag_color = vec4(ambient + shadow_max * diffuse, 1.0);
+	} else {
+		frag_color = vec4(ambient + (1.0 - shadow) * (diffuse + specular), 1.0);
+	}
 }
 
 

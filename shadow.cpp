@@ -126,7 +126,7 @@ std::array<glm::vec4, 8> Shadow::calcOrthoProj(int i, glm::mat4 view_camera_matr
 		m_shadow_boxes.at(i).m_bottom = min_y - offset;
 		m_shadow_boxes.at(i).m_top = max_y + offset;
 		m_shadow_boxes.at(i).m_far = max_z + offset;
-		m_shadow_boxes.at(i).m_near = min_z - offset;
+		m_shadow_boxes.at(i).m_near = 0;// min_z - offset;
 		
 		return frustum_corners_camera;
 }
