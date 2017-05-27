@@ -4,12 +4,12 @@
 #include "logger.h"
 #include "gl_headers.h"
 
-const GLuint Window::S_WIDTH = 800;
-const GLuint Window::S_HEIGHT = 600; 
+const GLuint Window::S_WIDTH = 1200;
+const GLuint Window::S_HEIGHT = 900; 
 
 const float Window::S_Z_NEAR = 0.1;
 const float Window::S_Z_FAR = 10.0; 
-const float Window::S_FOV_Y = 45.0;
+const float Window::S_FOV_Y = 45.0 / 180.0 * M_PI;//45.0;
 
 const GLuint Window::S_SHADOW_WIDTH = 1920;
 const GLuint Window::S_SHADOW_HEIGHT = 1080;
@@ -199,6 +199,8 @@ void Window::draw() {
 	glm::vec3 light_pos = glm::vec3(-2.0f, 2.0f, -2.0f);
  	glm::vec3 light_dir = glm::vec3(1.0f, -1.0f, 1.0f);
 
+	std::array<glm::vec4, 8> camera_corners;
+	
 	for (int i = 0; i < Shadow::S_NUM_CASCADES; i++) {
 
 		//bind current cascade--------------------------------------------------
@@ -212,7 +214,11 @@ void Window::draw() {
 		//----------------------------------------------------------------------
 
 		//calc box coordinates for current cascade------------------------------
-		m_shadow->calcOrthoProj(i, view_camera_matrix, view_light_matrix);
+		if (i == 0) {
+			camera_corners = m_shadow->calcOrthoProj(i, view_camera_matrix, view_light_matrix);
+		} else {
+			m_shadow->calcOrthoProj(i, view_camera_matrix, view_light_matrix);
+		}
 		ShadowBox shadow_info = m_shadow->getBox(i);
 		std::cout<<i<<": far - "<<shadow_info.m_far<<", near - "<<shadow_info.m_near<<", bottom - "<<shadow_info.m_bottom<<", top - "<<shadow_info.m_top<<", left - "<<shadow_info.m_left<<", right - "<<shadow_info.m_right<<std::endl;
 		//----------------------------------------------------------------------
@@ -274,14 +280,39 @@ void Window::draw() {
 	GL_CHECK(glUniform1i(glGetUniformLocation(program, "shadow_maps[1]"), m_shadow->getMap(1)));
 	GL_CHECK(glUniform1i(glGetUniformLocation(program, "shadow_maps[2]"), m_shadow->getMap(2)));
 	//------------------------------------------------------------------------
+	
 
 	glm::mat4 view_matrix = glm::lookAt(camera_pos, camera_front + camera_pos, camera_up);
 	glm::mat4 projection = glm::perspective(Window::S_FOV_Y, (GLfloat)S_WIDTH / (GLfloat)S_HEIGHT, Window::S_Z_NEAR, Window::S_Z_FAR);
+	
+	std::array<glm::vec4, 8> cc_copy = camera_corners;
+	
+	float reverse_z_array[] = {
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, -1.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f};
+		
+	glm::mat4 reverse_z = glm::make_mat4(reverse_z_array);
+	for (int i = 0; i < 8; ++i) {
+		camera_corners[i] = projection *  reverse_z * camera_corners[i];
+	}
+	
+	GL_CHECK(glUniform4fv(glGetUniformLocation(program, "points[0]"), 1, glm::value_ptr(camera_corners[0])));
+	GL_CHECK(glUniform4fv(glGetUniformLocation(program, "points[1]"), 1, glm::value_ptr(camera_corners[1])));
+	GL_CHECK(glUniform4fv(glGetUniformLocation(program, "points[2]"), 1, glm::value_ptr(camera_corners[2])));
+	GL_CHECK(glUniform4fv(glGetUniformLocation(program, "points[3]"), 1, glm::value_ptr(camera_corners[3])));
+	GL_CHECK(glUniform4fv(glGetUniformLocation(program, "points[4]"), 1, glm::value_ptr(camera_corners[4])));
+	GL_CHECK(glUniform4fv(glGetUniformLocation(program, "points[5]"), 1, glm::value_ptr(camera_corners[5])));
+	GL_CHECK(glUniform4fv(glGetUniformLocation(program, "points[6]"), 1, glm::value_ptr(camera_corners[6])));
+	GL_CHECK(glUniform4fv(glGetUniformLocation(program, "points[7]"), 1, glm::value_ptr(camera_corners[7])));
+	//------------------------------------------------------------------------
 
 	//set cascade ends--------------------------------------------------------
 	glm::vec4 ndc_end;
 	glm::vec4 clip_end;
 
+	glm::vec4 test = glm::vec4(0.0f, 0.0f,-m_shadow->getEnd(1), 1.0f);
 	clip_end = projection * glm::vec4(0.0f, 0.0f,-m_shadow->getEnd(1), 1.0f);
 	ndc_end = clip_end;// / clip_end.w;
 	GL_CHECK(glUniform1f(glGetUniformLocation(program, "cascade_ends[0]"), ndc_end.z));

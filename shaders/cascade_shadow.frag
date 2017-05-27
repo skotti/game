@@ -21,6 +21,9 @@ in VS_OUT {
 	float obj_depth;
 } vs_in;
 
+in vec4 points_edge[8];
+in vec4 l_coord;
+
 uniform DirLight dir_light;
 uniform sampler2D shadow_maps[NUM_CASCADES];
 uniform float cascade_ends[NUM_CASCADES];
@@ -31,9 +34,9 @@ uniform vec3 view_pos;//camera pos
 #define SHADOW_CALCULATION(pos_in_light_space, i) {\
 	vec3 proj_coords = pos_in_light_space.xyz / pos_in_light_space.w;\
 	proj_coords = proj_coords * 0.5 + 0.5;\
-	/*if ((i ==0 ) && !(proj_coords.x <= 0 || proj_coords.x >= 1.0 || proj_coords.y <= 0 || proj_coords.y >= 1.0)) {\
-		ambient = vec3(0.0, proj_coords.z, proj_coords.z);\
-	}*/\
+	/*if ((i ==2 ) && !(proj_coords.x <= 0.0 || proj_coords.x >= 1.0 || proj_coords.y <= 0.0 || proj_coords.y >= 1.0)) {*/\
+		/*ambient = vec3(1.0, 1.0, 1.0);*/\
+	/*}*/\
 	\
 	float closest_depth = texture(shadow_maps[i], proj_coords.xy).r;\
 	\
@@ -68,6 +71,7 @@ void main()
 	//vec3 light_color = 1.2*vec3(0.1745, 0.01175, 0.01175);
 	// Ambient
 	vec3 ambient = vec3(0.1745, 0.01175, 0.01175);
+	ambient = vec3(0.1, 0.1, 0.1);
 	// Diffuse
 	vec3 rev_dir_light = normalize(light_pos - vs_in.model_pos);
 	float diffuse_coeff = max(dot(rev_dir_light, normal), 0.0);
@@ -85,18 +89,33 @@ void main()
 	float shadow = 0.0;
 	
 	if (vs_in.obj_depth < cascade_ends[0]) {
-		
+// 		ambient = vec3(1.0, 0.0, 0.0);
 		SHADOW_CALCULATION(vs_in.light_pos[0], 0)
-		//ambient = vec3(0.4, 0.0, 0.0);
+		
 	} else if (vs_in.obj_depth < cascade_ends[1]) {
+// 		ambient = vec3(0.0, 1.0, 0.0);
 		SHADOW_CALCULATION(vs_in.light_pos[1], 1)
-		//ambient = vec3(0.0, 0.4, 0.0);
+		
 	} else if (vs_in.obj_depth < cascade_ends[2]) {
+// 		ambient = vec3(0.0, 0.0, 1.0);
 		SHADOW_CALCULATION(vs_in.light_pos[2], 2)
-		//ambient = vec3(0.0, 0.0, 0.4);
+		
 	} else {
-		//ambient = vec3(0.0, 1.0, 1.0);
+		ambient = vec3(1.0, 1.0, 0.0);
 		shadow = 0.0;
+	}
+	
+	for(int i = 4; i < 8; i++) {
+		vec3 lc = l_coord.xyz / l_coord.w;//vec3(l_coord.xy / l_coord.w, 0.0);
+		vec3 pe = points_edge[i].xyz / points_edge[i].w;//vec3(points_edge[i].xy / points_edge[i].w, 0.0);
+		if(distance(lc, pe) < 0.1)
+			ambient = vec3(0.0, 1.0, 1.0);
+	}
+	for(int i = 0; i < 4; i++) {
+		vec3 lc = vec3(l_coord.xy / l_coord.w, 0.0);
+		vec3 pe = vec3(points_edge[i].xy / points_edge[i].w, 0.0);
+		if(distance(lc, pe) < 0.05)
+			ambient = vec3(1.0, 1.0, 1.0);
 	}
 	
 	shadow = min(shadow, 0.65);

@@ -18,6 +18,8 @@ Shadow::Shadow()
 		std::cout<<"end : "<<m_box_ends.at(i)<<std::endl;
 	}
 	
+// 	m_box_ends.at(1) = Window::S_Z_FAR;
+	
 	// bind textures
 	GL_CHECK(glGenFramebuffers(1, &m_depth_fbo));
 	glGenTextures(S_NUM_CASCADES, &m_depth_maps.at(0));
@@ -57,7 +59,7 @@ void Shadow::bindForReading()
 	}
 }
 
-void Shadow::calcOrthoProj(int i, glm::mat4 view_camera_matrix, glm::mat4 view_light_matrix) {
+std::array<glm::vec4, 8> Shadow::calcOrthoProj(int i, glm::mat4 view_camera_matrix, glm::mat4 view_light_matrix) {
 	
 	float reverse_z_array[] = {
 		1.0f, 0.0f, 0.0f, 0.0f,
@@ -68,8 +70,8 @@ void Shadow::calcOrthoProj(int i, glm::mat4 view_camera_matrix, glm::mat4 view_l
 	glm::mat4 reverse_z = glm::make_mat4(reverse_z_array);
 
 	float x_y = (float)Window::S_HEIGHT/ (float)Window::S_WIDTH;
-	float tan_x = std::tan(Window::S_FOV_Y/180.0f * 1.0f * M_PI / 1.0f);
-  float tan_y = std::tan(Window::S_FOV_Y/180.0f * x_y  * M_PI / 1.0f);
+	float tan_x = std::tan(Window::S_FOV_Y / x_y / 2.0f);
+  float tan_y = std::tan(Window::S_FOV_Y / 2.0f);
 	
 		float xn = tan_x * m_box_ends.at(i);
 		float xf = tan_x * m_box_ends.at(i+1);
@@ -109,12 +111,12 @@ void Shadow::calcOrthoProj(int i, glm::mat4 view_camera_matrix, glm::mat4 view_l
 		}
 		
 		for (uint j = 0 ; j < S_NUM_FRUSTUM_CORNERS; j++) {
-			min_x = std::min(min_x, frustum_corners_light.at(j).x /*/ frustum_corners_light.at(j).w*/);
-			max_x = std::max(max_x, frustum_corners_light.at(j).x /*/ frustum_corners_light.at(j).w*/);
-			min_y = std::min(min_y, frustum_corners_light.at(j).y /*/ frustum_corners_light.at(j).w*/);
-			max_y = std::max(max_y, frustum_corners_light.at(j).y/* / frustum_corners_light.at(j).w*/);
-			min_z = std::min(min_z, frustum_corners_light.at(j).z /*/ frustum_corners_light.at(j).w*/);
-			max_z = std::max(max_z, frustum_corners_light.at(j).z /*/ frustum_corners_light.at(j).w*/);
+			min_x = std::min(min_x, frustum_corners_light.at(j).x / frustum_corners_light.at(j).w);
+			max_x = std::max(max_x, frustum_corners_light.at(j).x / frustum_corners_light.at(j).w);
+			min_y = std::min(min_y, frustum_corners_light.at(j).y / frustum_corners_light.at(j).w);
+			max_y = std::max(max_y, frustum_corners_light.at(j).y / frustum_corners_light.at(j).w);
+			min_z = std::min(min_z, frustum_corners_light.at(j).z / frustum_corners_light.at(j).w);
+			max_z = std::max(max_z, frustum_corners_light.at(j).z / frustum_corners_light.at(j).w);
 		}
 		
 		const float offset = 0.0f;
@@ -125,4 +127,6 @@ void Shadow::calcOrthoProj(int i, glm::mat4 view_camera_matrix, glm::mat4 view_l
 		m_shadow_boxes.at(i).m_top = max_y + offset;
 		m_shadow_boxes.at(i).m_far = max_z + offset;
 		m_shadow_boxes.at(i).m_near = min_z - offset;
+		
+		return frustum_corners_camera;
 }

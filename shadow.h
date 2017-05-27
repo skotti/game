@@ -49,7 +49,7 @@ public:
 	void bindForWriting(int index);
 	void bindForReading();
 	
-	void calcOrthoProj(int index, glm::mat4 view_camera_matrix, glm::mat4 view_light_matrix);
+	std::array<glm::vec4, 8> calcOrthoProj(int index, glm::mat4 view_camera_matrix, glm::mat4 view_light_matrix);
 	
 	static constexpr int S_NUM_CASCADES = 3;
 	static constexpr int S_NUM_FRUSTUM_CORNERS = 8;
