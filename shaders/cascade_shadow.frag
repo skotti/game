@@ -45,20 +45,20 @@ uniform vec3 view_pos;//camera pos
 	vec3 normal = normalize(vs_in.normal);\
 	vec3 rev_dir_light = normalize(-dir_light.direction);\
 	\
-	float bias = 0.001*tan(acos(dot(normal, rev_dir_light)));\
+	float bias = 0.0002*sin(acos(dot(normal, rev_dir_light)));\
 	bias = clamp(bias, 0,	0.01);\
 	\
 	shadow = 0.0;\
-	vec2 texel_size = 1.0 / textureSize(shadow_maps[i], 0) / 5.0;\
-	for(int x = -4; x <= 4; ++x)\
+	vec2 texel_size = 1.0 / textureSize(shadow_maps[i], 0);\
+	for(int x = -0; x <= 0; ++x)\
 	{\
-		for(int y = -4; y <= 4; ++y)\
+		for(int y = -0; y <= 0; ++y)\
 		{\
 			float pcf_pepth = texture(shadow_maps[i], proj_coords.xy + vec2(x, y) * texel_size).r;\
 			shadow += ((current_depth - bias) >= pcf_pepth) ? 1.0 : 0.0;\
 		}\
 	}\
-	shadow /= 81.0;\
+	/*shadow /= 1.0;*/\
 	if (proj_coords.z > 1.0) {\
 		/*light_color = vec3(0.4, 0.0, 0.4);*/\
 		shadow = 0.0;\
@@ -89,15 +89,15 @@ void main()
 	float shadow = 0.0;
 	
 	if (vs_in.obj_depth < cascade_ends[0]) {
-// 		ambient = vec3(1.0, 0.0, 0.0);
+ 		//ambient = vec3(1.0, 0.0, 0.0);
 		SHADOW_CALCULATION(vs_in.light_pos[0], 0)
 		
 	} else if (vs_in.obj_depth < cascade_ends[1]) {
-// 		ambient = vec3(0.0, 1.0, 0.0);
+ 		//ambient = vec3(0.0, 1.0, 0.0);
 		SHADOW_CALCULATION(vs_in.light_pos[1], 1)
 		
 	} else if (vs_in.obj_depth < cascade_ends[2]) {
-// 		ambient = vec3(0.0, 0.0, 1.0);
+ 		//ambient = vec3(0.0, 0.0, 1.0);
 		SHADOW_CALCULATION(vs_in.light_pos[2], 2)
 		
 	} else {

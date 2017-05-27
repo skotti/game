@@ -12,13 +12,16 @@ Shadow::Shadow()
 	float cascade_size = Window::S_Z_FAR - Window::S_Z_NEAR;
 	
 	m_box_ends.at(0) = Window::S_Z_NEAR;
-	for (int i = S_NUM_CASCADES; i > 0; i--) {
-		m_box_ends.at(i) = Window::S_Z_NEAR + cascade_size;
-		cascade_size /= 2.0f;
-		std::cout<<"end : "<<m_box_ends.at(i)<<std::endl;
-	}
 	
-// 	m_box_ends.at(1) = Window::S_Z_FAR;
+// 	for (int i = S_NUM_CASCADES; i > 0; i--) {
+// 		m_box_ends.at(i) = Window::S_Z_NEAR + cascade_size;
+// 		cascade_size /= 4.0f;
+// 		std::cout<<"end : "<<m_box_ends.at(i)<<std::endl;
+// 	}
+	
+	m_box_ends.at(1) = m_box_ends.at(0) + 0.1f * cascade_size;
+	m_box_ends.at(2) = m_box_ends.at(1) + 0.2f * cascade_size;
+	m_box_ends.at(3) = Window::S_Z_FAR;
 	
 	// bind textures
 	GL_CHECK(glGenFramebuffers(1, &m_depth_fbo));

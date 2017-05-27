@@ -218,8 +218,8 @@ void Window::draw() {
 	//renderShadows
 	std::array<glm::mat4, Shadow::S_NUM_CASCADES> light_projection_matrix;
 	std::array<glm::mat4, Shadow::S_NUM_CASCADES> light_vp_matrix; 
-	glm::vec3 light_pos = glm::vec3(-2.0f, 10.0f, -2.0f);
-	glm::vec3 light_dir = glm::vec3(1.0f, -5.0f, 1.0f);
+	glm::vec3 light_pos = glm::vec3(-3.0f, 7.0f, -4.0f);
+	glm::vec3 light_dir = glm::vec3(1.0f, -2.0f, 1.5f);
 
 	std::array<glm::vec4, 8> camera_corners;
 	
