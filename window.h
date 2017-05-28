@@ -125,6 +125,7 @@ private:
 	void createShadowShader();
 	void createSkyBoxShader();
 	void createInterShader();
+	void drawSkyBox(glm::vec3 camera_pos, glm::vec3 camera_front, glm::vec3 camera_up);
 	
 	void createVisualObjects();
 	

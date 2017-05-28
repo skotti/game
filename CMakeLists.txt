@@ -60,6 +60,13 @@ configure_file(textures/bottom.jpg textures/bottom.jpg COPYONLY)
 configure_file(textures/back.jpg textures/back.jpg COPYONLY)
 configure_file(textures/front.jpg textures/front.jpg COPYONLY)
 
+configure_file(textures/elbrus_rt.png textures/elbrus_rt.png COPYONLY)
+configure_file(textures/elbrus_lf.png textures/elbrus_lf.png COPYONLY)
+configure_file(textures/elbrus_up.png textures/elbrus_up.png COPYONLY)
+configure_file(textures/elbrus_dn.png textures/elbrus_dn.png COPYONLY)
+configure_file(textures/elbrus_bk.png textures/elbrus_bk.png COPYONLY)
+configure_file(textures/elbrus_ft.png textures/elbrus_ft.png COPYONLY)
+
 configure_file(models/modelCube.obj models/modelCube.obj COPYONLY)
 
 find_package(OpenGL REQUIRED)

@@ -70,12 +70,12 @@ SkyBox::SkyBox()
     GL_CHECK(glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox_texture));
     
     std::vector<const GLchar*> faces;
-    faces.push_back("textures/right.jpg");
-    faces.push_back("textures/left.jpg");
-    faces.push_back("textures/top.jpg");
-    faces.push_back("textures/bottom.jpg");
-    faces.push_back("textures/back.jpg");
-    faces.push_back("textures/front.jpg");
+    faces.push_back("textures/elbrus_rt.png");
+    faces.push_back("textures/elbrus_lf.png");
+    faces.push_back("textures/elbrus_up.png");
+    faces.push_back("textures/elbrus_dn.png");
+    faces.push_back("textures/elbrus_bk.png");
+    faces.push_back("textures/elbrus_ft.png");
     
     for (int i = 0; i < faces.size(); i++) {
         image = SOIL_load_image(faces[i], &width, &height, 0, SOIL_LOAD_RGB);

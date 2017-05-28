@@ -102,6 +102,7 @@ Window::Window() {
 	initTextObject();
 
 	m_shadow = new Shadow();
+	m_skybox = new SkyBox();
 }
 
 Window::~Window() {
@@ -273,6 +274,9 @@ void Window::draw() {
 	GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 	glViewport(0, 0, S_WIDTH, S_HEIGHT);  
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	
+	drawSkyBox(camera_pos, camera_front, camera_up);
 
 	program = m_shadow_shader->getShaderProgram();
 	GL_CHECK(glUseProgram(program));  
@@ -373,6 +377,34 @@ void Window::draw() {
 	//glBindTexture(GL_TEXTURE_2D, 0);
 	drawFonts();
 }
+
+void Window::drawSkyBox(glm::vec3 camera_pos, glm::vec3 camera_front, glm::vec3 camera_up)
+{
+	GLuint program = m_skybox_shader->getShaderProgram();
+	
+	glm::mat4 skyview = glm::lookAt(camera_pos, camera_pos + camera_front, camera_up);
+	glDepthMask(GL_FALSE);// Remember to turn depth writing offset
+	GL_CHECK(glUseProgram(program));		
+	// glm::mat4 skyview = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	glm::mat4 skyprojection = glm::perspective(Window::S_FOV_Y, (float)Window::S_WIDTH/(float)Window::S_HEIGHT, Window::S_Z_NEAR, Window::S_Z_FAR);
+	GL_CHECK(glUniformMatrix4fv(glGetUniformLocation(program, "view"), 1, GL_FALSE, glm::value_ptr(skyview)));
+	GL_CHECK(glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(skyprojection)));
+
+
+	// skybox cube
+	GL_CHECK(glBindVertexArray(m_skybox->getVAO()));
+	GL_CHECK(glActiveTexture(GL_TEXTURE0));
+	//        glm::mat4 skymodel;
+	glm::mat4 skymodel = glm::translate(glm::mat4(), camera_pos);
+	GL_CHECK(glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(skymodel)));
+	GL_CHECK(glUniform1i(glGetUniformLocation(program, "skybox"), 0));
+	GL_CHECK(glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox->getText()));
+	GL_CHECK(glDrawArrays(GL_TRIANGLES, 0, 36));
+	GL_CHECK(glBindVertexArray(0));
+
+	glDepthMask(GL_TRUE);
+}
+
 
 void Window::initFonts() {	
 	FT_Library ft;
