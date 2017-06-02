@@ -22,6 +22,7 @@ uniform vec4 points[8];
 
 uniform mat4 light_view[NUM_CASCADES];
 out vec4 l_coord;
+out vec2 TexCoords;
 
 void main() {
     for (int i = 0; i < NUM_CASCADES; i++) {
@@ -35,4 +36,5 @@ void main() {
     for (int i = 0; i < 8; i++)
 			points_edge[i] = points[i];
 		l_coord = gl_Position;
+		TexCoords = tex_coords;
 }

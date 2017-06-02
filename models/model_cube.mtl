@@ -1,0 +1,13 @@
+# Blender MTL File: 'model_cube.blend'
+# Material Count: 1
+
+newmtl cube
+Ns 1000.000000
+Ka 0.174500 0.011750 0.011750
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 0
+map_Kd textures/wildtextures_stone-bricks-wall.jpg

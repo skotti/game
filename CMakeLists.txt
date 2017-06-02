@@ -4,28 +4,31 @@ project(game)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 add_executable(cube_game 
-	main.cpp
-	debug.cpp
-	engine.cpp
-	input_notifier.cpp
-	model.cpp
-	printf.cpp
-	window.cpp
-	shader.cpp
-	mouse_notifier.cpp
-	texture.cpp
-	maze_generator.cpp
-	game_logic.cpp
-	player_logic.cpp
-	game_object.cpp
-	game_graphic.cpp
-	utils.cpp
-	menu.cpp
-	random.cpp
-	shadow.cpp
-	skybox.cpp
+	src/main.cpp
+	src/debug.cpp
+	src/engine.cpp
+	src/input_notifier.cpp
+	src/printf.cpp
+	src/window.cpp
+	src/shader.cpp
+	src/mouse_notifier.cpp
+	src/maze_generator.cpp
+	src/game_logic.cpp
+	src/player_logic.cpp
+	src/game_object.cpp
+	src/game_graphic.cpp
+	src/utils.cpp
+	src/menu.cpp
+	src/random.cpp
+	src/shadow.cpp
+	src/skybox.cpp
+	src/dynamic_enemy_logic.cpp
+	src/models/object.cpp
+	src/models/material.cpp
+	src/models/texture.cpp
 	)
 
+target_include_directories(cube_game PUBLIC src)
 target_compile_options(cube_game PUBLIC -g -std=c++14)
 
 configure_file(shaders/light_fragment.frag shaders/light_fragment.frag COPYONLY)
@@ -67,7 +70,23 @@ configure_file(textures/elbrus_dn.png textures/elbrus_dn.png COPYONLY)
 configure_file(textures/elbrus_bk.png textures/elbrus_bk.png COPYONLY)
 configure_file(textures/elbrus_ft.png textures/elbrus_ft.png COPYONLY)
 
-configure_file(models/modelCube.obj models/modelCube.obj COPYONLY)
+configure_file(textures/wildtextures_stone-bricks-wall.jpg textures/wildtextures_stone-bricks-wall.jpg COPYONLY)
+
+configure_file(models/model_cube.obj models/model_cube.obj COPYONLY)
+configure_file(models/model_cube.mtl models/model_cube.mtl COPYONLY)
+
+configure_file(models/eyeball.obj models/eyeball.obj COPYONLY)
+configure_file(models/eyeball.mtl models/eyeball.mtl COPYONLY)
+
+
+configure_file(textures/Eye_D.jpg textures/Eye_D.jpg COPYONLY)
+configure_file(textures/Eye_N.jpg textures/Eye_N.jpg COPYONLY)
+configure_file(textures/REF_1.jpg textures/REF_1.jpg COPYONLY)
+
+configure_file(textures/E-45_glass_nor_.jpg textures/E-45_glass_nor_.jpg COPYONLY)
+configure_file(textures/E-45_col.jpg textures/E-45_col.jpg COPYONLY)
+configure_file(models/E_45_Aircraft_obj.obj models/E_45_Aircraft_obj.obj COPYONLY)
+configure_file(models/E_45_Aircraft_obj.mtl models/E_45_Aircraft_obj.mtl COPYONLY)
 
 find_package(OpenGL REQUIRED)
 
