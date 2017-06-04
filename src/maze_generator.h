@@ -90,7 +90,7 @@ public:
 		generate(len_x, len_y, start_x, start_y);
 	}
 	
-	void generate(int len_x, int len_y, int start_x = 0, int start_y = 0);
+	void generate(int len_x, int len_y, int start_x = 0, int start_y = 0, bool simple = true);
 	
 	MazeNode& node(int x, int y) {
 		return node(MazeIndex(x, y));
@@ -143,8 +143,9 @@ private:
 	void fillFalseCycles();
 	void closeFalceCycles();
 	void addRandomPaths();
+	void addReturnPaths();
 	
-	void genHeights(int x, int y);
+	void genHeights(int x, int y, bool simple = true);
 	
 	std::vector<MazeNode> m_nodes;
 	int m_len_x = 0, m_len_y = 0;

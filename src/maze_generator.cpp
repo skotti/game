@@ -18,7 +18,7 @@ MazeDir opposite(MazeDir dir) {
 	}
 }
 
-void MazeGenerator::generate(int len_x, int len_y, int start_x, int start_y) {
+void MazeGenerator::generate(int len_x, int len_y, int start_x, int start_y, bool simple) {
 	m_len_x = len_x;
 	m_len_y = len_y;
 	
@@ -37,18 +37,27 @@ void MazeGenerator::generate(int len_x, int len_y, int start_x, int start_y) {
 	
 	//dump(true);
 	
-	fillFalseCycles();
+	simple = true;
+	if (!simple) {
 	
-	//dump();
-	
-	closeFalceCycles();
-	
-	//dump();
-	addRandomPaths();
+		fillFalseCycles();
+		
+		//dump();
+		
+		closeFalceCycles();
+		
+		//dump();
+		addRandomPaths();
+	} else {
+		//dump();
+		addReturnPaths();
+		
+		//dump();
+	}
 	
 	m_last_pos_x = m_start_x;
 	m_last_pos_y = m_start_y;
-	genHeights(m_start_x, m_start_y);
+	genHeights(m_start_x, m_start_y, simple);
 }
 
 void MazeGenerator::classicDFS() {
@@ -327,8 +336,12 @@ void MazeGenerator::addRandomPaths()
 	}
 }
 
-void MazeGenerator::genHeights(int x, int y)
+void MazeGenerator::genHeights(int x, int y, bool simple)
 {
+	if (simple == true) {
+		m_heights.resize(m_len_x * m_len_y, 0.0);
+		return;
+	}
 	m_heights.resize(m_len_x * m_len_y);
 	
 	MazeIndex cur(x, y);
@@ -361,3 +374,22 @@ void MazeGenerator::genHeights(int x, int y)
 	}
 
 }
+
+void MazeGenerator::addReturnPaths()
+{
+	float rate = 1.0;
+	for (int i = 0; i < m_len_x; ++i) {
+		for (int j = 0; j < m_len_y; ++j) {
+			for (int dir = 0; dir != static_cast<int>(MazeDir::ALL); ++dir) {
+				if (
+					inside(MazeIndex(i, j).neigh(static_cast<MazeDir>(dir))) // inside playing area
+					&& node(MazeIndex(i, j)).dir(static_cast<MazeDir>(dir)) == true // has path in one direction
+					&& Random::getFloat(0, 1) < rate // check probability
+				) {
+					node(MazeIndex(i, j).neigh(static_cast<MazeDir>(dir))).dir(opposite(static_cast<MazeDir>(dir))) = true;
+				}
+			}
+		}
+	}
+}
+

@@ -85,6 +85,9 @@ configure_file(models/vm.obj models/vm.obj COPYONLY)
 configure_file(models/vm.mtl models/vm.mtl COPYONLY)
 configure_file(textures/Virtual-Machines-Icon.png textures/Virtual-Machines-Icon.png COPYONLY)
 
+configure_file(models/wall.obj models/wall.obj COPYONLY)
+configure_file(models/wall.mtl models/wall.mtl COPYONLY)
+
 configure_file(models/cube_textured.obj models/cube_textured.obj COPYONLY)
 configure_file(models/cube_textured.mtl models/cube_textured.mtl COPYONLY)
 configure_file(textures/grass4k.jpg textures/grass4k.jpg COPYONLY)

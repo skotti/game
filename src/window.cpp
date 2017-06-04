@@ -12,7 +12,7 @@ const GLuint Window::S_WIDTH = 1280;
 const GLuint Window::S_HEIGHT = 960;
 
 const float Window::S_Z_NEAR = 0.1;
-const float Window::S_Z_FAR = 100.0; 
+const float Window::S_Z_FAR = 20.0; 
 const float Window::S_FOV_Y = 45.0 / 180.0 * M_PI;//45.0;
 
 const GLuint Window::S_SHADOW_WIDTH = 1920;
@@ -76,9 +76,13 @@ Window::Window() {
 	GL_CHECK(glDepthFunc(GL_LESS));
 	
 	// to draw fonts
-	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 	
 	createVisualObjects();
 	
@@ -120,6 +124,7 @@ void Window::addTexture(const std::string& file_name) {
 
 int Window::registerGameObject(const std::string& window_model_name) {
 	View* view = new View();
+	VASSERT(m_objects.count(window_model_name) == 1, "Unknown model name");
 	view->m_object = m_objects.at(window_model_name);
 	m_view.push_back(view);
 	int id = objectIdCounter++;
@@ -136,7 +141,7 @@ void Window::destroyGameObject(int id)
 void Window::createVisualObjects() {
 	m_objects["cube"] = new Object("models/cube_textured.obj");
 	m_objects["dynamic_enemy"] = new Object("models/eyeball.obj");
-
+	m_objects["wall"] = new Object("models/wall.obj");
 }
 
 void Window::createObjectShader() {

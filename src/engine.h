@@ -100,7 +100,7 @@ private:
 		m_game_object.push_back(game_object);
 	}	
 	
-	void initializeMaze(int size_x, int size_y);
+	void initializeMaze(int size_x, int size_y, bool simple = true);
 	
 	void initializeMenu();
 	
@@ -111,7 +111,12 @@ private:
 		
 	std::list<GameObject*> m_game_object;
 
-	std::vector<GameObject*> m_maze_components;
+	struct MazeComponent {
+		GameObject* m_maze_block;
+		std::array<GameObject*, 4> m_maze_wall = std::array<GameObject*, 4>{0, 0, 0, 0};
+	};
+	
+	std::vector<MazeComponent> m_maze_components;
 	
 	MazeGenerator m_generator;
 	
