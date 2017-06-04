@@ -105,6 +105,7 @@ public:
 	static const GLuint S_SHADOW_WIDTH;
 	static const GLuint S_SHADOW_HEIGHT;
 	static std::map<std::string, Texture*> S_TEXTURES;
+	
 private:
 	Window();
 	~Window();

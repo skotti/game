@@ -89,7 +89,7 @@ void Engine::initializeMaze(int size_x, int size_y) {
 	auto start_pos = m_generator.getStart();
 	m_player_object->setPos(Vec3f{
 		(start_pos.x() + 0.5f)*S_BLOCK_WIDTH,
-		m_generator.height(start_pos)*S_BLOCK_HEIGHT/2.0f + S_PLAYER_HEIGHT,
+		m_generator.height(start_pos)*S_BLOCK_HEIGHT + S_PLAYER_HEIGHT,
 		(start_pos.y() + 0.5f)*S_BLOCK_WIDTH
 	});
 	
@@ -100,12 +100,12 @@ void Engine::initializeMaze(int size_x, int size_y) {
 		for (int i = 0; i < size_x; i++) {
 			size = Vec3f{
 				S_BLOCK_WIDTH, 
-				m_generator.height(i, j)*S_BLOCK_HEIGHT,
+				S_BLOCK_HEIGHT,
 				S_BLOCK_WIDTH};
 				
 			pos = Vec3f{
 				static_cast<float>(i+0.5)*S_BLOCK_WIDTH, 
-				0.0f, 
+				m_generator.height(MazeIndex(i, j)) - 0.5f * S_BLOCK_HEIGHT, 
 				static_cast<float>(j+0.5)*S_BLOCK_WIDTH};
 			
 			GameObject* game_object = new GameObject(new ModelGraphic("cube"), new MazeBlockLogic(i, j));
@@ -145,9 +145,9 @@ void Engine::correctPlayerPosition()
 	int cur_cube_j = floor(cur_player_pos[2] / S_BLOCK_WIDTH);
 	
 	int size_x = m_generator.getLen().x();
-	Vec3f next_block_height = m_maze_components.at(cur_cube_i + cur_cube_j * size_x)->getSize();
+	Vec3f next_block_height = m_maze_components.at(cur_cube_i + cur_cube_j * size_x)->getPos();
 	
-	float desired_player_height = next_block_height[1]/2.0f + S_PLAYER_HEIGHT;
+	float desired_player_height = next_block_height[1] + 0.5f * Engine::S_BLOCK_HEIGHT + S_PLAYER_HEIGHT;
 	float cur_player_height = cur_player_pos[1];
 	
 	if (cur_player_height < desired_player_height) {

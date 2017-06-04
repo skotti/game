@@ -29,7 +29,7 @@ add_executable(cube_game
 	)
 
 target_include_directories(cube_game PUBLIC src)
-target_compile_options(cube_game PUBLIC -g -std=c++14)
+target_compile_options(cube_game PUBLIC -g3 -O0 -std=c++14)
 
 configure_file(shaders/light_fragment.frag shaders/light_fragment.frag COPYONLY)
 configure_file(shaders/light_vertex.vert shaders/light_vertex.vert COPYONLY)
@@ -73,10 +73,24 @@ configure_file(textures/elbrus_ft.png textures/elbrus_ft.png COPYONLY)
 configure_file(textures/wildtextures_stone-bricks-wall.jpg textures/wildtextures_stone-bricks-wall.jpg COPYONLY)
 
 configure_file(models/model_cube.obj models/model_cube.obj COPYONLY)
-configure_file(models/model_cube.mtl models/model_cube.mtl COPYONLY)
+#configure_file(models/model_cube.mtl models/model_cube.mtl COPYONLY)
+
+configure_file(models/cube.obj models/cube.obj COPYONLY)
+configure_file(models/cube.mtl models/cube.mtl COPYONLY)
 
 configure_file(models/eyeball.obj models/eyeball.obj COPYONLY)
 configure_file(models/eyeball.mtl models/eyeball.mtl COPYONLY)
+
+configure_file(models/vm.obj models/vm.obj COPYONLY)
+configure_file(models/vm.mtl models/vm.mtl COPYONLY)
+configure_file(textures/Virtual-Machines-Icon.png textures/Virtual-Machines-Icon.png COPYONLY)
+
+configure_file(models/cube_textured.obj models/cube_textured.obj COPYONLY)
+configure_file(models/cube_textured.mtl models/cube_textured.mtl COPYONLY)
+configure_file(textures/grass4k.jpg textures/grass4k.jpg COPYONLY)
+
+configure_file(models/plane.obj models/plane.obj COPYONLY)
+configure_file(models/plane.mtl models/plane.mtl COPYONLY)
 
 
 configure_file(textures/Eye_D.jpg textures/Eye_D.jpg COPYONLY)

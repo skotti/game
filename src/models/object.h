@@ -13,6 +13,7 @@ public:
 		Vec3<GLfloat> m_norm;
 		Vec2<GLfloat> m_texture;
 	};
+
 	
 	struct Mesh {
 		std::vector<Vertex> m_vertices;
@@ -26,23 +27,22 @@ public:
 		GLuint getEBO() { return m_ebo;}
 		GLuint getVAO() { return m_vao;}
 		
-		int getIndicesSize() {return m_indices.size(); }
-		int m_material_index;
 		
+		int getIndicesSize() {return m_indices.size(); }
+		Material* m_material;
+		std::string m_texture;
+		bool m_has_texture;
 	};
 
 	Mesh* getMesh(size_t i) {return m_meshes.at(i);}
-	Material* getMaterial(size_t i) {return m_materials.at(i);}
 	size_t meshesNum() {return m_meshes.size();}
+	
 	Object(const std::string& file);
 	~Object();
 
 private:
-	
-	int m_num_meshes;
-//	std::vector<int> m_num_vertices;
+
 	std::vector<Mesh*> m_meshes;
-	std::vector<Material*> m_materials;
 };
 
 #endif // OBJECT_H

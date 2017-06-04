@@ -18,8 +18,6 @@ public:
 	Vec3f m_specular;
 	Vec3f m_diffuse;
 	GLfloat m_shininess;
-	std::string m_texture_name;
-	std::string m_material_name;
 };
 
 

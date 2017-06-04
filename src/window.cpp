@@ -134,8 +134,9 @@ void Window::destroyGameObject(int id)
 }
 
 void Window::createVisualObjects() {
-	m_objects["cube"] = new Object("models/model_cube.obj");
+	m_objects["cube"] = new Object("models/cube_textured.obj");
 	m_objects["dynamic_enemy"] = new Object("models/eyeball.obj");
+
 }
 
 void Window::createObjectShader() {
@@ -181,7 +182,6 @@ void Window::createShadowShader() {
 	
 }
 
-
 void Window::createSkyBoxShader() {
 	m_skybox_shader = new ShaderProgram();
 	Shader vertex_shader("shaders/skybox_vertex.vert", ShaderType::VERTEX);
@@ -215,8 +215,8 @@ void Window::draw() {
 	//renderShadows
 	std::array<glm::mat4, Shadow::S_NUM_CASCADES> light_projection_matrix;
 	std::array<glm::mat4, Shadow::S_NUM_CASCADES> light_vp_matrix; 
-	glm::vec3 light_pos = glm::vec3(-3.0f, 7.0f, -4.0f);
-	glm::vec3 light_dir = glm::vec3(1.0f, -2.0f, 1.5f);
+	glm::vec3 light_pos = glm::vec3(-1.0f, 10.0f, -1.0f);
+	glm::vec3 light_dir = glm::vec3(1.0f, -2.0f, 1.0f);
 
 	std::array<glm::vec4, 8> camera_corners;
 	
@@ -277,13 +277,13 @@ void Window::draw() {
 	drawSkyBox(camera_pos, camera_front, camera_up);
 
 	program = m_shadow_shader->getShaderProgram();
+	
 	GL_CHECK(glUseProgram(program));  
 	m_shadow->bindForReading();
 	//set current view position------------------------------------------------
 	GLint view_pos_loc = GL_CHECK(glGetUniformLocation(program, "view_pos"));
 	GL_CHECK(glUniform3f(view_pos_loc, camera_pos.x, camera_pos.y, camera_pos.z)); 
 	//-------------------------------------------------------------------------
-
 	//set light properties----------------------------------------------------
 	int start_of_point_sources;
 	GL_CHECK(glUniform3f(glGetUniformLocation(program, "dir_light.direction"), light_dir.x, light_dir.y, light_dir.z));
@@ -361,15 +361,17 @@ void Window::draw() {
 		
 		View* view = m_view.at(j);
 		Object* obj = view->m_object;
+// 		std::cout<<"j:"<<j<<", cur_pos : "<<view->m_pos[0]<<" "<<view->m_pos[1]<<" "<<view->m_pos[2]<<std::endl;
+// 		std::cout<<"j:"<<j<<", cur_size : "<<view->m_size[0]<<" "<<view->m_size[1]<<" "<<view->m_size[2]<<std::endl;
 			
 		for (int k = 0; k < obj->meshesNum(); k++) {
 			GL_CHECK(glActiveTexture(GL_TEXTURE0+1));
 			
-			int mat_index = obj->getMesh(k)->m_material_index;
-			std::string texture_name = obj->getMaterial(obj->getMesh(k)->m_material_index)->m_texture_name;
+			std::string texture_name = obj->getMesh(k)->m_texture;
 			Vec3f cur_pos = view->m_pos;
 			Vec3f cur_size = view->m_size;
-			glBindTexture(GL_TEXTURE_2D,S_TEXTURES[obj->getMaterial(obj->getMesh(k)->m_material_index)->m_texture_name]->getGLid());
+			if (obj->getMesh(k)->m_has_texture)
+				glBindTexture(GL_TEXTURE_2D,S_TEXTURES.at(texture_name)->getGLid());
 			GL_CHECK(glBindVertexArray(obj->getMesh(k)->getVAO()));
 
 			glm::mat4 model;
@@ -377,12 +379,13 @@ void Window::draw() {
 			model = glm::scale(model, toGLMvec3(view->m_size));
 			model *= glm::lookAt(glm::vec3(0.0, 0.0, 0.0), -toGLMvec3(view->m_front), toGLMvec3(view->m_up));
 			
+			GL_CHECK(glUniform1i(glGetUniformLocation(program, "has_texture"), obj->getMesh(k)->m_has_texture));
 			GL_CHECK(glUniform1i(glGetUniformLocation(program, "texture_sampler"), 1));
-			t_ambient = obj->getMaterial(obj->getMesh(k)->m_material_index)->m_ambient;
+			t_ambient = obj->getMesh(k)->m_material->m_ambient;
 			GL_CHECK(glUniform3f(glGetUniformLocation(program, "material.ambient"), t_ambient[0], t_ambient[1], t_ambient[2]));
-			t_diffuse = obj->getMaterial(obj->getMesh(k)->m_material_index)->m_diffuse;
+			t_diffuse = obj->getMesh(k)->m_material->m_diffuse;
 			GL_CHECK(glUniform3f(glGetUniformLocation(program, "material.diffuse"), t_diffuse[0], t_diffuse[1], t_diffuse[2]));
-			t_specular = obj->getMaterial(obj->getMesh(k)->m_material_index)->m_specular;
+			t_specular = obj->getMesh(k)->m_material->m_specular;
 			GL_CHECK(glUniform3f(glGetUniformLocation(program, "material.specular"), t_specular[0], t_specular[1], t_specular[2]));
 			
 			GL_CHECK(glUniform1f(glGetUniformLocation(program, "material.shininess"), 100));

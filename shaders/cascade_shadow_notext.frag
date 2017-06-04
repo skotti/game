@@ -9,7 +9,6 @@ struct DirLight {
 };
 
 struct Material {
-
 		vec3 ambient;
 		vec3 specular;
 		vec3 diffuse;
@@ -26,7 +25,6 @@ in VS_OUT {
 	float obj_depth;
 } vs_in;
 
-in vec2 TexCoords;
 
 in vec4 points_edge[8];
 in vec4 l_coord;
@@ -38,9 +36,7 @@ uniform float cascade_ends[NUM_CASCADES];
 uniform vec3 light_pos;//light position
 uniform vec3 view_pos;//camera pos
 
-uniform sampler2D texture_sampler;
 uniform Material material;
-uniform bool has_texture; 
 
 #define SHADOW_CALCULATION(pos_in_light_space, i) {\
 	vec3 proj_coords = pos_in_light_space.xyz / pos_in_light_space.w;\
@@ -80,11 +76,6 @@ uniform bool has_texture;
 void main()
 {           
 	vec3 light_color = vec3(1.0, 1.0, 1.0);
-	vec3 color = vec3(1.0, 1.0, 1.0);
-	if (has_texture) {
-		color = texture(texture_sampler, TexCoords).rgb;
-		//color = light_color * 10 * TexCoords.y;
-	}
 	
 	vec3 normal = normalize(vs_in.normal);
 	//vec3 light_color = 1.2*vec3(0.1745, 0.01175, 0.01175);
@@ -94,7 +85,7 @@ void main()
 	// Diffuse
 	vec3 rev_dir_light = normalize(light_pos - vs_in.model_pos);
 	float diffuse_coeff = max(dot(rev_dir_light, normal), 0.1); // 0.1 is reflecting light
-	vec3 diffuse = diffuse_coeff*material.diffuse;// * vec3(0.61424, 0.04136, 0.04136);
+	vec3 diffuse = diffuse_coeff*material.diffuse*light_color;// * vec3(0.61424, 0.04136, 0.04136);
 	// Specular
 	float spec_coeff = 0.0;
 	vec3 view_dir = normalize(view_pos - vs_in.model_pos);
@@ -103,7 +94,7 @@ void main()
 	if (light_side) {
 		spec_coeff = pow(max(dot(normal, halfway_dir), 0.0), 0.6);
 	}
-	vec3 specular = spec_coeff*material.specular; //* vec3(0.727811, 0.626959, 0.626959);
+	vec3 specular = spec_coeff*material.specular*light_color; //* vec3(0.727811, 0.626959, 0.626959);
 	
 	float shadow = 0.0;
 	
@@ -139,9 +130,9 @@ void main()
 	
 	float shadow_max = 0.65;
 	if (shadow > shadow_max) {
-		frag_color = vec4((ambient + shadow_max * diffuse)*color, 1.0);
+		frag_color = vec4((ambient + shadow_max * diffuse), 1.0);
 	} else {
-		frag_color = vec4((ambient + (1.0 - shadow_max) * (diffuse + specular))*color, 1.0);
+		frag_color = vec4((ambient + (1.0 - shadow) * (diffuse + specular)), 1.0);
 	}
 }
 
