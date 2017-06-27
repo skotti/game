@@ -3,6 +3,8 @@ project(game)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 add_executable(cube_game 
 	src/main.cpp
 	src/debug.cpp

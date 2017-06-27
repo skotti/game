@@ -140,7 +140,7 @@ void Window::destroyGameObject(int id)
 
 void Window::createVisualObjects() {
 	m_objects["cube"] = new Object("models/cube_textured.obj");
-	m_objects["dynamic_enemy"] = new Object("models/eyeball.obj");
+	//m_objects["dynamic_enemy"] = new Object("models/eyeball.obj");
 	m_objects["wall"] = new Object("models/wall.obj");
 }
 

@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd /home/skotti/projects/game_starting_from_shadows/game/textures/grass4k.jpg
+map_Kd textures/grass4k.jpg
 
 newmtl Material_NONE
 Ns 96.078431
@@ -31,4 +31,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd /home/skotti/wildtextures_stone-bricks-wall.jpg
+lap_Kd textures/wildtextures_stone-bricks-wall.jpg
