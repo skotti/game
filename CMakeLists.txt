@@ -121,6 +121,8 @@ configure_file(textures/cube4_top.tga textures/cube4_top.tga COPYONLY)
 
 configure_file(audio/menu_hover.wav audio/menu_hover.wav COPYONLY)
 configure_file(audio/menu_select.wav audio/menu_select.wav COPYONLY)
+configure_file(audio/ambient_background.ogg audio/ambient_background.ogg COPYONLY)
+configure_file(audio/win.ogg audio/win.ogg COPYONLY)
 
 configure_file(models/plane.obj models/plane.obj COPYONLY)
 configure_file(models/plane.mtl models/plane.mtl COPYONLY)

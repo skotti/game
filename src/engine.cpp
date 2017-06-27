@@ -47,7 +47,14 @@ Engine::Engine() : m_exit_required(false)
 
 	initializeMenu();
 	
-	
+	Player::BufferId buf_amb_bkg = m_audio_player.addBuffer("audio/ambient_background.ogg");
+	m_ambient_background = m_audio_player.addSource();
+	m_audio_player.queue(m_ambient_background, buf_amb_bkg);
+	m_audio_player.looping(m_ambient_background, true);
+
+	Player::BufferId buf_win = m_audio_player.addBuffer("audio/win.ogg");
+	m_audio_win = m_audio_player.addSource();
+	m_audio_player.queue(m_audio_win, buf_win);
 }
 
 Engine::~Engine()

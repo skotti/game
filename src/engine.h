@@ -117,6 +117,8 @@ public:
 			m_win_menu->disable();
 			Window::instance()->showText(m_game_title);
 			Window::instance()->hideText(m_you_win);
+			m_audio_player.stop(m_ambient_background);
+			m_audio_player.stop(m_audio_win);
 			break;
 		case GameState::Game:
 			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -125,6 +127,8 @@ public:
 			m_win_menu->disable();
 			Window::instance()->hideText(m_game_title);
 			Window::instance()->hideText(m_you_win);
+			m_audio_player.play(m_ambient_background);
+			m_audio_player.stop(m_audio_win);
 			break;
 		case GameState::GameMenu:
 			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -133,6 +137,8 @@ public:
 			m_win_menu->disable();
 			Window::instance()->hideText(m_game_title);
 			Window::instance()->hideText(m_you_win);
+			m_audio_player.pause(m_ambient_background);
+			m_audio_player.stop(m_audio_win);
 			break;
 		case GameState::WinScreen:
 			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -141,6 +147,8 @@ public:
 			m_win_menu->enable();
 			Window::instance()->hideText(m_game_title);
 			Window::instance()->showText(m_you_win);
+			m_audio_player.stop(m_ambient_background);
+			m_audio_player.play(m_audio_win);
 			break;
 		}
 		m_game_state = m_next_game_state;
@@ -229,6 +237,8 @@ private:
 	Window::TextId m_you_win;
 
 	Player m_audio_player;
+	Player::SourceId m_ambient_background;
+	Player::SourceId m_audio_win;
 };
 
 #endif
