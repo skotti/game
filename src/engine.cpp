@@ -55,10 +55,14 @@ Engine::~Engine()
 	Window::instance()->destroyText(m_game_title);
 	Window::instance()->destroyText(m_you_win);
 
-	m_main_menu.unsubscribe(this);
-	m_game_menu.unsubscribe(this);
-	m_win_menu.unsubscribe(this);
+	m_main_menu->unsubscribe(this);
+	m_game_menu->unsubscribe(this);
+	m_win_menu->unsubscribe(this);
 	
+	delete m_main_menu;
+	delete m_game_menu;
+	delete m_win_menu;
+
 	// clear old blocks
 	if (m_maze_components.size() != 0) {
 		for (auto&& object : m_maze_components) {
@@ -239,22 +243,32 @@ void Engine::initializeMenu()
 {
 	glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
+	Player::BufferId bid_h = m_audio_player.addBuffer("audio/menu_hover.wav");
+	Player::BufferId bid_s = m_audio_player.addBuffer("audio/menu_select.wav");
+	Player::SourceId sid_h = m_audio_player.addSource();
+	Player::SourceId sid_s = m_audio_player.addSource();
+	m_audio_player.queue(sid_h, bid_h);
+	m_audio_player.queue(sid_s, bid_s);
 
-	m_main_menu.subscribe(this);
-	m_main_menu.addEntry("New Game");
-	m_main_menu.addEntry("Exit");
-	m_main_menu.enable();
+	m_main_menu = new Menu(&m_audio_player, sid_h, sid_s);
+	m_game_menu = new Menu(&m_audio_player, sid_h, sid_s);
+	m_win_menu = new Menu(&m_audio_player, sid_h, sid_s);
 
-	m_game_menu.subscribe(this);
-	m_game_menu.addEntry("New Game");
-	m_game_menu.addEntry("Main Menu");
-	m_game_menu.addEntry("Exit");
-	m_game_menu.disable();
+	m_main_menu->subscribe(this);
+	m_main_menu->addEntry("New Game");
+	m_main_menu->addEntry("Exit");
+	m_main_menu->enable();
 
-	m_win_menu.subscribe(this);
-	m_win_menu.addEntry("New Game");
-	m_win_menu.addEntry("Main Menu");
-	m_win_menu.disable();
+	m_game_menu->subscribe(this);
+	m_game_menu->addEntry("New Game");
+	m_game_menu->addEntry("Main Menu");
+	m_game_menu->addEntry("Exit");
+	m_game_menu->disable();
+
+	m_win_menu->subscribe(this);
+	m_win_menu->addEntry("New Game");
+	m_win_menu->addEntry("Main Menu");
+	m_win_menu->disable();
 }
 
 void Engine::engineLogic() {

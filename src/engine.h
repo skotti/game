@@ -16,6 +16,7 @@
 #include "platform.h"
 #include "random.h"
 #include "game_state.h"
+#include "audio/player.h"
 
 class Engine : public Listener<InputEvent>, public Singleton<Engine>, public Listener<MenuEvent> {
 
@@ -111,33 +112,33 @@ public:
 		{
 		case GameState::MainMenu:
 			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			m_game_menu.disable();
-			m_main_menu.enable();
-			m_win_menu.disable();
+			m_game_menu->disable();
+			m_main_menu->enable();
+			m_win_menu->disable();
 			Window::instance()->showText(m_game_title);
 			Window::instance()->hideText(m_you_win);
 			break;
 		case GameState::Game:
 			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			m_game_menu.disable();
-			m_main_menu.disable();
-			m_win_menu.disable();
+			m_game_menu->disable();
+			m_main_menu->disable();
+			m_win_menu->disable();
 			Window::instance()->hideText(m_game_title);
 			Window::instance()->hideText(m_you_win);
 			break;
 		case GameState::GameMenu:
 			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			m_game_menu.enable();
-			m_main_menu.disable();
-			m_win_menu.disable();
+			m_game_menu->enable();
+			m_main_menu->disable();
+			m_win_menu->disable();
 			Window::instance()->hideText(m_game_title);
 			Window::instance()->hideText(m_you_win);
 			break;
 		case GameState::WinScreen:
 			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			m_game_menu.disable();
-			m_main_menu.disable();
-			m_win_menu.enable();
+			m_game_menu->disable();
+			m_main_menu->disable();
+			m_win_menu->enable();
 			Window::instance()->hideText(m_game_title);
 			Window::instance()->showText(m_you_win);
 			break;
@@ -215,9 +216,9 @@ private:
 	
 	GameObject* m_player_object = nullptr;
 	
-	Menu m_game_menu;
-	Menu m_main_menu;
-	Menu m_win_menu;
+	Menu* m_game_menu;
+	Menu* m_main_menu;
+	Menu* m_win_menu;
 	
 	bool m_new_game = true;
 
@@ -226,6 +227,8 @@ private:
 
 	Window::TextId m_game_title;
 	Window::TextId m_you_win;
+
+	Player m_audio_player;
 };
 
 #endif

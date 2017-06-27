@@ -11,6 +11,7 @@
 #include "mouse_notifier.h"
 
 #include "window.h"
+#include "audio/player.h"
 
 struct MenuEvent {
 	int m_entry_num = 0;
@@ -19,9 +20,14 @@ struct MenuEvent {
 class Menu : public Listener<MouseEvent>, public Listener<InputEvent>, public Notifier<MenuEvent> {
 public:
 	
-	Menu() {
+	explicit Menu(Player* audio_player, Player::SourceId sid_h, Player::SourceId sid_s) :
+		m_audio_player(audio_player),
+		m_sid_h(sid_h),
+		m_sid_s(sid_s)
+	{
 		InputNotifier::instance()->subscribe(this);
 		MouseNotifier::instance()->subscribe(this);
+
 	}
 	
 	void addEntry(const std::string& entry_name) {
@@ -49,6 +55,8 @@ public:
 	}
 	
 	virtual void onEvent(MouseEvent event) {
+		if (m_disabled) return;
+
 		m_pos = Vec2f{event.xpos, event.ypos};
 		auto me = findMenuEntry();
 		for (auto&& entry : m_entries) {
@@ -56,7 +64,18 @@ public:
 		}
 		if (me != m_entries.end()) {
 			Window::instance()->setTextColor(*me, Vec3f{1.0, 0.0, 0.0});
+			m_hover = true;
+		} else {
+			m_hover = false;
 		}
+
+		if (m_hover && !m_prev_hover)
+		{
+			m_audio_player->stop(m_sid_h);
+			m_audio_player->play(m_sid_h);
+		}
+
+		m_prev_hover = m_hover;
 	}
 	
 	virtual void onEvent(InputEvent event) {
@@ -66,6 +85,8 @@ public:
 			auto me = findMenuEntry();
 			if (me != m_entries.end()) {
 				notify(MenuEvent{static_cast<int>(std::distance(m_entries.begin(), me))});
+				m_audio_player->stop(m_sid_s);
+				m_audio_player->play(m_sid_s);
 			}
 		}
 	}
@@ -96,6 +117,13 @@ private:
 	Vec2f m_pos = Vec2f{0, 0};
 	
 	std::list<Window::TextId> m_entries;
+
+	Player* m_audio_player;
+	Player::SourceId m_sid_h;
+	Player::SourceId m_sid_s;
+
+	bool m_hover = false;
+	bool m_prev_hover = false;
 };
 
 #endif

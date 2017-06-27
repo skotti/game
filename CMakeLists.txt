@@ -25,6 +25,9 @@ add_executable(cube_game
 	src/shadow.cpp
 	src/skybox.cpp
 	src/dynamic_enemy_logic.cpp
+
+	src/audio/player.cpp
+
 	src/models/object.cpp
 	src/models/material.cpp
 	src/models/texture.cpp
@@ -116,6 +119,9 @@ configure_file(textures/cube2_top.tga textures/cube2_top.tga COPYONLY)
 configure_file(textures/cube3_top.tga textures/cube3_top.tga COPYONLY)
 configure_file(textures/cube4_top.tga textures/cube4_top.tga COPYONLY)
 
+configure_file(audio/menu_hover.wav audio/menu_hover.wav COPYONLY)
+configure_file(audio/menu_select.wav audio/menu_select.wav COPYONLY)
+
 configure_file(models/plane.obj models/plane.obj COPYONLY)
 configure_file(models/plane.mtl models/plane.mtl COPYONLY)
 
@@ -158,3 +164,12 @@ find_package(Freetype REQUIRED)
 
 target_include_directories(cube_game PUBLIC ${FREETYPE_INCLUDE_DIRS})
 target_link_libraries(cube_game PUBLIC ${FREETYPE_LIBRARIES})
+
+find_package(OpenAL REQUIRED)
+target_include_directories(cube_game PUBLIC ${OPENAL_INCLUDE_DIR})
+target_link_libraries(cube_game PUBLIC ${OPENAL_LIBRARY})
+message(STATUS "OpenAL includes: " ${OPENAL_INCLUDE_DIR})
+message(STATUS "OpenAL includes: " ${OPENAL_LIBRARY})
+if(NOT OPENAL_FOUND)
+	message(FATAL_ERROR "OpenAL is not found")
+endif(NOT OPENAL_FOUND)
