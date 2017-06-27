@@ -110,8 +110,8 @@ void Engine::initializeMaze(int size_x, int size_y, bool simple) {
 	int start_y = Random::getInt(0, size_y-1);
 
 	// TODO remove
-	start_x = 0;
-	start_y = 0;
+	//start_x = 0;
+	//start_y = 0;
 	
 	m_generator.generate(size_x, size_y, start_x, start_y, simple);
 	m_maze_components.resize(size_x * size_y);
@@ -209,7 +209,7 @@ void Engine::engineLogic() {
 	
 	Logger::instance()->log("pos = %, %, %, ind = %, %", pos[0], pos[1], pos[2], cur_cube_i, cur_cube_j);
 	
-	m_generator.setPosition(cur_cube_i, cur_cube_j);
+	m_generator.setPosition(cur_cube_i, cur_cube_j, false);
 }
 
 void Engine::correctPlayerPosition()

@@ -37,7 +37,6 @@ void MazeGenerator::generate(int len_x, int len_y, int start_x, int start_y, boo
 	
 	//dump(true);
 	
-	simple = true;
 	if (!simple) {
 	
 		fillFalseCycles();

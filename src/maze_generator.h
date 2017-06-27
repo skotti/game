@@ -104,11 +104,11 @@ public:
 		return ind.inside(m_len_x, m_len_y);
 	}
 	
-	void setPosition(int x, int y) {
+	void setPosition(int x, int y, bool simple = true) {
 		assert(0 <= x && x < m_len_x);
 		assert(0 <= y && y < m_len_y);
 		if (x != m_last_pos_x || y != m_last_pos_y) {
-			genHeights(x, y);
+			genHeights(x, y, simple);
 		}
 		
 		m_last_pos_x = x;

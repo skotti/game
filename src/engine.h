@@ -92,7 +92,7 @@ public:
 private:
 	
 	void startNewGame(int size_x, int size_y) {
-		initializeMaze(size_x, size_y);
+		initializeMaze(size_x, size_y, false);
 	}
 	
 	void registerGameObject(GameObject* game_object) {
