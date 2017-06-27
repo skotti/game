@@ -117,9 +117,10 @@ void Engine::initializeMaze(int size_x, int size_y, bool simple) {
 	m_maze_components.resize(size_x * size_y);
 	
 	auto start_pos = m_generator.getStart();
+
 	m_player_object->setPos(Vec3f{
 		(start_pos.x() + 0.5f)*S_BLOCK_WIDTH,
-		m_generator.height(start_pos)*S_BLOCK_HEIGHT + S_PLAYER_HEIGHT,
+		m_generator.height(start_pos) + S_PLAYER_HEIGHT,
 		(start_pos.y() + 0.5f)*S_BLOCK_WIDTH
 	});
 	
