@@ -101,7 +101,7 @@ public:
 	
 	void updateLogic() {
 		if (m_new_game) {
-			startNewGame(Random::getInt(1, 20), Random::getInt(1, 20));
+			startNewGame(Random::getInt(2, 10), Random::getInt(2, 10));
 			m_new_game = false;
 		}
 
