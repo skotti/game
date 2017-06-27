@@ -3,7 +3,7 @@
 #include "vector.h"
 
 const Vec2f Menu::S_MENU_POS = Vec2f{ 0.2f, 0.25f };
-const float Menu::S_MENU_SIZE = 0.001;
+const float Menu::S_MENU_SIZE = 0.0003;
 const float Menu::S_MENU_OFFSET = 0.05;
 
 const Vec3f Menu::S_DEFAULT_COLOR = Vec3f{ 1.0f, 1.0f, 1.0f };

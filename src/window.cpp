@@ -457,7 +457,7 @@ void Window::initFonts() {
 	FT_Face face;
 	FT_CHECK(FT_New_Face(ft, "fonts/DejaVuSansMono.ttf", 0, &face));
 	
-	FT_CHECK(FT_Set_Pixel_Sizes(face, 0, 48));
+	FT_CHECK(FT_Set_Pixel_Sizes(face, 0, 144));
 	
 	GL_CHECK(glPixelStorei(GL_UNPACK_ALIGNMENT, 1)); // use first byte of colour
 	

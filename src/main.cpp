@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 	double previous_second = clock.getTime();
 	double lag = 0.0;
 	
-	Window::TextId fps_id = Window::instance()->registerText("FPS: 0", Vec2f{0.01f, 0.9f}, 0.001f);
+	Window::TextId fps_id = Window::instance()->registerText("FPS: 0", Vec2f{0.01f, 0.95f}, 0.0003f);
 	
 	while (!engine->isExitRequired())
 	{

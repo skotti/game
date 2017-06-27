@@ -40,6 +40,11 @@ Engine::Engine() : m_exit_required(false)
 // 	registerGameObject(dynamic_enemy);
 // 	
 	
+	m_game_title = Window::instance()->registerText("Dynamic Labyrinth", Vec2f{0.2f, 0.5f}, 0.0005f);
+	m_you_win = Window::instance()->registerText("YOU WIN", Vec2f{0.2f, 0.5f}, 0.0005f);
+	Window::instance()->showText(m_game_title);
+	Window::instance()->hideText(m_you_win);
+
 	initializeMenu();
 	
 	
@@ -47,6 +52,9 @@ Engine::Engine() : m_exit_required(false)
 
 Engine::~Engine()
 {
+	Window::instance()->destroyText(m_game_title);
+	Window::instance()->destroyText(m_you_win);
+
 	m_main_menu.unsubscribe(this);
 	m_game_menu.unsubscribe(this);
 	m_win_menu.unsubscribe(this);

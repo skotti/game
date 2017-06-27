@@ -114,24 +114,32 @@ public:
 			m_game_menu.disable();
 			m_main_menu.enable();
 			m_win_menu.disable();
+			Window::instance()->showText(m_game_title);
+			Window::instance()->hideText(m_you_win);
 			break;
 		case GameState::Game:
 			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			m_game_menu.disable();
 			m_main_menu.disable();
 			m_win_menu.disable();
+			Window::instance()->hideText(m_game_title);
+			Window::instance()->hideText(m_you_win);
 			break;
 		case GameState::GameMenu:
 			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			m_game_menu.enable();
 			m_main_menu.disable();
 			m_win_menu.disable();
+			Window::instance()->hideText(m_game_title);
+			Window::instance()->hideText(m_you_win);
 			break;
 		case GameState::WinScreen:
 			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			m_game_menu.disable();
 			m_main_menu.disable();
 			m_win_menu.enable();
+			Window::instance()->hideText(m_game_title);
+			Window::instance()->showText(m_you_win);
 			break;
 		}
 		m_game_state = m_next_game_state;
@@ -215,6 +223,9 @@ private:
 
 	GameState m_game_state = GameState::MainMenu;
 	GameState m_next_game_state = GameState::MainMenu;
+
+	Window::TextId m_game_title;
+	Window::TextId m_you_win;
 };
 
 #endif
