@@ -65,7 +65,6 @@ configure_file(textures/envmap_violentdays/violentdays_dn.tga textures/envmap_vi
 configure_file(textures/envmap_violentdays/violentdays_bk.tga textures/envmap_violentdays/violentdays_bk.tga COPYONLY)
 configure_file(textures/envmap_violentdays/violentdays_ft.tga textures/envmap_violentdays/violentdays_ft.tga COPYONLY)
 
-configure_file(textures/wildtextures_stone-bricks-wall.jpg textures/wildtextures_stone-bricks-wall.jpg COPYONLY)
 
 configure_file(models/model_cube.obj models/model_cube.obj COPYONLY)
 #configure_file(models/model_cube.mtl models/model_cube.mtl COPYONLY)
@@ -86,6 +85,36 @@ configure_file(models/wall.mtl models/wall.mtl COPYONLY)
 configure_file(models/cube_textured.obj models/cube_textured.obj COPYONLY)
 configure_file(models/cube_textured.mtl models/cube_textured.mtl COPYONLY)
 configure_file(textures/grass4k.jpg textures/grass4k.jpg COPYONLY)
+configure_file(textures/wildtextures_stone-bricks-wall.jpg textures/wildtextures_stone-bricks-wall.jpg COPYONLY)
+
+
+configure_file(models/start_cube.obj models/start_cube.obj COPYONLY)
+configure_file(models/finish_cube.obj models/finish_cube.obj COPYONLY)
+configure_file(models/cube1.obj models/cube1.obj COPYONLY)
+configure_file(models/cube2.obj models/cube2.obj COPYONLY)
+configure_file(models/cube3.obj models/cube3.obj COPYONLY)
+configure_file(models/cube4.obj models/cube4.obj COPYONLY)
+
+configure_file(models/start_cube.mtl models/start_cube.mtl COPYONLY)
+configure_file(models/finish_cube.mtl models/finish_cube.mtl COPYONLY)
+configure_file(models/cube1.mtl models/cube1.mtl COPYONLY)
+configure_file(models/cube2.mtl models/cube2.mtl COPYONLY)
+configure_file(models/cube3.mtl models/cube3.mtl COPYONLY)
+configure_file(models/cube4.mtl models/cube4.mtl COPYONLY)
+
+configure_file(textures/start_cube.tga textures/start_cube.tga COPYONLY)
+configure_file(textures/finish_cube.tga textures/finish_cube.tga COPYONLY)
+configure_file(textures/cube1.tga textures/cube1.tga COPYONLY)
+configure_file(textures/cube2.tga textures/cube2.tga COPYONLY)
+configure_file(textures/cube3.tga textures/cube3.tga COPYONLY)
+configure_file(textures/cube4.tga textures/cube4.tga COPYONLY)
+
+configure_file(textures/start_cube_top.tga textures/start_cube_top.tga COPYONLY)
+configure_file(textures/finish_cube_top.tga textures/finish_cube_top.tga COPYONLY)
+configure_file(textures/cube1_top.tga textures/cube1_top.tga COPYONLY)
+configure_file(textures/cube2_top.tga textures/cube2_top.tga COPYONLY)
+configure_file(textures/cube3_top.tga textures/cube3_top.tga COPYONLY)
+configure_file(textures/cube4_top.tga textures/cube4_top.tga COPYONLY)
 
 configure_file(models/plane.obj models/plane.obj COPYONLY)
 configure_file(models/plane.mtl models/plane.mtl COPYONLY)
