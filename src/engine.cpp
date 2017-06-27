@@ -13,7 +13,7 @@
 #include <random>
 
 const float Engine::S_BLOCK_WIDTH = 1.2;
-const float Engine::S_BLOCK_HEIGHT = 4.0;
+const float Engine::S_BLOCK_HEIGHT = 1.5;
 const float Engine::S_PLAYER_HEIGHT = 2.0 * Window::S_Z_NEAR;
 const float Engine::S_PLAYER_DELTA = 0.01;
 const float Engine::S_PLAYER_WIDTH = 0.2;

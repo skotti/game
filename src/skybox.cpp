@@ -72,17 +72,19 @@ SkyBox::SkyBox()
     GL_CHECK(glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox_texture));
     
     std::vector<const GLchar*> faces;
-    faces.push_back("textures/elbrus_rt.png");
-    faces.push_back("textures/elbrus_lf.png");
-    faces.push_back("textures/elbrus_up.png");
-    faces.push_back("textures/elbrus_dn.png");
-    faces.push_back("textures/elbrus_bk.png");
-    faces.push_back("textures/elbrus_ft.png");
+    faces.push_back("textures/envmap_violentdays/violentdays_rt.tga");
+    faces.push_back("textures/envmap_violentdays/violentdays_lf.tga");
+    faces.push_back("textures/envmap_violentdays/violentdays_up.tga");
+    faces.push_back("textures/envmap_violentdays/violentdays_dn.tga");
+    faces.push_back("textures/envmap_violentdays/violentdays_bk.tga");
+    faces.push_back("textures/envmap_violentdays/violentdays_ft.tga");
     
     for (int i = 0; i < faces.size(); i++) {
         //image = SOIL_load_image(faces[i], &width, &height, 0, SOIL_LOAD_RGB);
 				
 				image = stbi_load(faces[i], &width, &height, nullptr, STBI_rgb_alpha);
+				VASSERT(image, "Can't load skybox texture");
+				
         GL_CHECK(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image));
 				stbi_image_free(image);
     }
