@@ -252,9 +252,13 @@ void Engine::initializeMenu()
 void Engine::engineLogic() {
 	
 	Vec3f pos = m_player_object->getPos();
-	
+
 	int cur_cube_i = floor(pos[0] / S_BLOCK_WIDTH);
 	int cur_cube_j = floor(pos[2] / S_BLOCK_WIDTH);
+	
+	if (cur_cube_i == m_generator.getEnd().x() && cur_cube_j == m_generator.getEnd().y() && getGameState() == GameState::Game) {
+		setGameState(GameState::WinScreen);
+	}
 	
 	Logger::instance()->log("pos = %, %, %, ind = %, %", pos[0], pos[1], pos[2], cur_cube_i, cur_cube_j);
 	
