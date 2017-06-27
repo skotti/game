@@ -107,22 +107,22 @@ void main()
 	
 	float shadow = 0.0;
 	
-// 	if (vs_in.obj_depth < cascade_ends[0]) {
-//  		//ambient = vec3(1.0, 0.0, 0.0);
-// 		SHADOW_CALCULATION(vs_in.light_pos[0], 0)
-// 		
-// 	} else if (vs_in.obj_depth < cascade_ends[1]) {
-//  		//ambient = vec3(0.0, 1.0, 0.0);
-// 		SHADOW_CALCULATION(vs_in.light_pos[1], 1)
-// 		
-// 	} else if (vs_in.obj_depth < cascade_ends[2]) {
-//  		//ambient = vec3(0.0, 0.0, 1.0);
-// 		SHADOW_CALCULATION(vs_in.light_pos[2], 2)
-// 		
-// 	} else {
-// 		ambient = vec3(1.0, 1.0, 0.0);
-// 		shadow = 0.0;
-// 	}
+ 	if (vs_in.obj_depth < cascade_ends[0]) {
+  		//ambient = vec3(1.0, 0.0, 0.0);
+ 		SHADOW_CALCULATION(vs_in.light_pos[0], 0)
+ 		
+ 	} else if (vs_in.obj_depth < cascade_ends[1]) {
+  		//ambient = vec3(0.0, 1.0, 0.0);
+ 		SHADOW_CALCULATION(vs_in.light_pos[1], 1)
+ 		
+ 	} else if (vs_in.obj_depth < cascade_ends[2]) {
+  		//ambient = vec3(0.0, 0.0, 1.0);
+ 		SHADOW_CALCULATION(vs_in.light_pos[2], 2)
+ 		
+ 	} else {
+ 		ambient = vec3(1.0, 1.0, 0.0);
+ 		shadow = 0.0;
+ 	}
 	
 // 	for(int i = 4; i < 8; i++) {
 // 		vec3 lc = l_coord.xyz / l_coord.w;//vec3(l_coord.xy / l_coord.w, 0.0);
