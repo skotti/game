@@ -34,7 +34,6 @@ private :
 	static const GLfloat S_SHIFT_SPEED;
 	static const GLfloat S_ROTATE_SPEED;
 	
-	bool m_disable = false;
 };
 
 

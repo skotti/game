@@ -47,7 +47,9 @@ Engine::Engine() : m_exit_required(false)
 
 Engine::~Engine()
 {
-	m_menu.unsubscribe(this);
+	m_main_menu.unsubscribe(this);
+	m_game_menu.unsubscribe(this);
+	m_win_menu.unsubscribe(this);
 	
 	// clear old blocks
 	if (m_maze_components.size() != 0) {
@@ -196,9 +198,24 @@ void Engine::initializeMaze(int size_x, int size_y, bool simple) {
 
 void Engine::initializeMenu()
 {
-	m_menu.subscribe(this);
-	m_menu.addEntry("New game");
-	m_menu.addEntry("Exit");
+	glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+
+	m_main_menu.subscribe(this);
+	m_main_menu.addEntry("New Game");
+	m_main_menu.addEntry("Exit");
+	m_main_menu.enable();
+
+	m_game_menu.subscribe(this);
+	m_game_menu.addEntry("New Game");
+	m_game_menu.addEntry("Main Menu");
+	m_game_menu.addEntry("Exit");
+	m_game_menu.disable();
+
+	m_win_menu.subscribe(this);
+	m_win_menu.addEntry("New Game");
+	m_win_menu.addEntry("Main Menu");
+	m_win_menu.disable();
 }
 
 void Engine::engineLogic() {

@@ -57,10 +57,7 @@ void PlayerLogic::onEvent(InputEvent event)
 	MazeGenerator& mg = Engine::instance()->getMazeGenerator();
 	MazeNode& cur_mn = mg.node(ind_i, ind_j);
 	
-	if (event == InputEvent::MENU) {
-		m_disable = !m_disable;
-	}
-	if (!m_disable) {
+	if (Engine::instance()->getGameState() == GameState::Game) {
 		if (event == InputEvent::FORWARD) {
 			m_player_pos = m_player_pos + S_SHIFT_SPEED * glm::normalize(glm::vec3(m_player_front[0], 0, m_player_front[2]));
 		}
@@ -121,7 +118,7 @@ void PlayerLogic::onEvent(MouseEvent event)
 	m_last_x = event.xpos;//set new last X position
 	m_last_y = event.ypos;//set new last Y position
 
-	if (m_disable) return;
+	if (Engine::instance()->getGameState() != GameState::Game) return; 
 	
 	float sensitivity = 0.05;
 	xoffset *= sensitivity;//minor offset

@@ -15,6 +15,7 @@
 #include "menu.h"
 #include "platform.h"
 #include "random.h"
+#include "game_state.h"
 
 class Engine : public Listener<InputEvent>, public Singleton<Engine>, public Listener<MenuEvent> {
 
@@ -24,24 +25,66 @@ public:
 	
 	virtual void onEvent(InputEvent event) {
 		Logger::instance()->log("Engine process event");
-		if (event == InputEvent::MENU) {
-			m_menu_mode = !m_menu_mode;
-			if (m_menu_mode) {
-				glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-				m_menu.enable();
-			} else {
-				glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-				m_menu.disable();
+		switch (m_game_state) 
+		{
+		case GameState::MainMenu:
+			break;
+		case GameState::Game:
+			if (event == InputEvent::MENU)
+			{
+				setGameState(GameState::GameMenu);
 			}
+			break;
+		case GameState::GameMenu:
+			if (event == InputEvent::MENU)
+			{
+				setGameState(GameState::Game);
+			}
+			break;
+		case GameState::WinScreen:
+			if (event == InputEvent::MENU)
+			{
+				setGameState(GameState::MainMenu);
+			}
+			break;
 		}
 	}
 	
 	virtual void onEvent(MenuEvent event) {
-		if (event.m_entry_num == 0) {
-			m_new_game = true;
-		}
-		if (event.m_entry_num == 1) {
-			m_exit_required = true;
+		switch (m_game_state)
+		{
+			case GameState::Game:
+				break;
+			case GameState::MainMenu:
+				if (event.m_entry_num == 0) {
+					m_new_game = true;
+					setGameState(GameState::Game);
+				}
+				else if (event.m_entry_num == 1) {
+					m_exit_required = true;
+				}
+				break;
+			case GameState::GameMenu:
+				if (event.m_entry_num == 0) {
+					m_new_game = true;
+					setGameState(GameState::Game);
+				}
+				else if (event.m_entry_num == 1) {
+					setGameState(GameState::MainMenu);
+				}
+				else if (event.m_entry_num == 2) {
+					m_exit_required = true;
+				}
+				break;
+			case GameState::WinScreen:
+				if (event.m_entry_num == 0) {
+					m_new_game = true;
+					setGameState(GameState::Game);
+				}
+				else if (event.m_entry_num == 1) {
+					setGameState(GameState::MainMenu);
+				}
+				break;
 		}
 	}
 	
@@ -60,7 +103,41 @@ public:
 			startNewGame(Random::getInt(1, 20), Random::getInt(1, 20));
 			m_new_game = false;
 		}
+
+		// update game state 
 		
+		if (m_game_state != m_next_game_state)
+		switch (m_next_game_state) 
+		{
+		case GameState::MainMenu:
+			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			m_game_menu.disable();
+			m_main_menu.enable();
+			m_win_menu.disable();
+			break;
+		case GameState::Game:
+			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			m_game_menu.disable();
+			m_main_menu.disable();
+			m_win_menu.disable();
+			break;
+		case GameState::GameMenu:
+			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			m_game_menu.enable();
+			m_main_menu.disable();
+			m_win_menu.disable();
+			break;
+		case GameState::WinScreen:
+			glfwSetInputMode(Window::instance()->getGLWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			m_game_menu.disable();
+			m_main_menu.disable();
+			m_win_menu.enable();
+			break;
+		}
+		m_game_state = m_next_game_state;
+		
+		// end of updating game state
+
 		engineLogic();
 		for (auto&& obj : m_game_object) { 
 			obj->update();
@@ -89,6 +166,11 @@ public:
 	static const float S_PLAYER_WIDTH;
 	static const float S_TIME_STEP;
 	
+	GameState getGameState() const { return m_game_state; }
+	void setGameState(GameState state) { 
+		m_next_game_state = state;
+	}
+
 private:
 	
 	void startNewGame(int size_x, int size_y) {
@@ -125,10 +207,14 @@ private:
 	
 	GameObject* m_player_object = nullptr;
 	
-	Menu m_menu;
+	Menu m_game_menu;
+	Menu m_main_menu;
+	Menu m_win_menu;
 	
 	bool m_new_game = true;
-	bool m_menu_mode = false;
+
+	GameState m_game_state = GameState::MainMenu;
+	GameState m_next_game_state = GameState::MainMenu;
 };
 
 #endif
