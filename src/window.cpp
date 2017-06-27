@@ -5,6 +5,8 @@
 #include "gl_headers.h"
 #include "stl_headers.h"
 
+#include "engine.h"
+
 #include <ft2build.h>
 #include FT_FREETYPE_H 
 
@@ -209,6 +211,9 @@ void Window::createInterShader() {
 }
 
 void Window::draw() {
+	GameState state = Engine::instance()->getGameState();
+	if (state == GameState::Game || state == GameState::GameMenu) {
+
 	int view_size = m_view.size();
 	glm::vec3 camera_pos = toGLMvec3(getCamera().getPos());
 	glm::vec3 camera_front = toGLMvec3(getCamera().getFront());
@@ -404,6 +409,9 @@ void Window::draw() {
 			GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
 		}
 	}
+
+
+	} // end of long drawing code
 	
 	drawFonts();
 }
