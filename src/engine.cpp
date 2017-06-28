@@ -9,6 +9,7 @@
 #include "utils.h"
 #include "window.h"
 #include "dynamic_enemy_logic.h"
+#include "utils.h"
 
 #include <random>
 
@@ -148,6 +149,8 @@ void Engine::initializeMaze(int size_x, int size_y, bool simple) {
 	Vec3f pos{0, 0, 0};
 	Vec3f size{0, 0, 0};
 	
+	int level = Random::getInt(0, 4);
+
 	for (int j = 0; j < size_y; j++) {
 		for (int i = 0; i < size_x; i++) {
 			size = Vec3f{
@@ -171,24 +174,11 @@ void Engine::initializeMaze(int size_x, int size_y, bool simple) {
 			}
 			else 
 			{
-				int cube_type = Random::getInt(0, 3);
-				switch (cube_type)
-				{
-					case 0:
-						game_object = new GameObject(new ModelGraphic("cube1"), new MazeBlockLogic(i, j));
-						break;
-					case 1:
-						game_object = new GameObject(new ModelGraphic("cube2"), new MazeBlockLogic(i, j));
-						break;
-					case 2:
-						game_object = new GameObject(new ModelGraphic("cube3"), new MazeBlockLogic(i, j));
-						break;
-					case 3:
-						game_object = new GameObject(new ModelGraphic("cube4"), new MazeBlockLogic(i, j));
-						break;
-					default:
-						ASSERT(0);
-						break;
+				if (level == 0) {
+					int cube_type = Random::getInt(1, 4);
+					game_object = new GameObject(new ModelGraphic("cube" + toString(cube_type)), new MazeBlockLogic(i, j));
+				} else {
+					game_object = new GameObject(new ModelGraphic("cube" + toString(level)), new MazeBlockLogic(i, j));
 				}
 			}
 
